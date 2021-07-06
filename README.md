@@ -31,9 +31,9 @@
 
 ------
 ## Deploy 🚀
-- [![Deploy](https://telegra.ph/file/09260dc311afc06c22573.jpg)](#Deploy-To-Heroku)
+- [Deploy](#Deploy-To-Heroku)
 
-- [![Locally]](#Deploy-Locally)
+- [Locally](#Deploy-Locally)
 
 
 ------
@@ -88,7 +88,7 @@
 - Paste the OTP received on Telegram.
 - If You have Enabled 2-Step Verification then fill your password.
 - Your EivaBot Session Will be saved in your Telegram Saved Message.
-- [![Replit](https://telegra.ph/file/09260dc311afc06c22573.jpg)](https://replit.com/@Errorshivansh/EivaBot?v=1)
+- [Replit](https://replit.com/@Errorshivansh/EivaBot?v=1)
 
 ### Terminal
 - Open the terminal.
