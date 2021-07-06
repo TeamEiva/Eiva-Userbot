@@ -134,5 +134,5 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 - 💖 [Lonami](https://github.com/Lonami) for [Telethon](https://github.com/LonamiWebs/Telethon)
 - 💖 My Team Members For Supporting Me.
-- 💖 [Hellbot](https://github.com/Thehellbot/Hellbot)
+- 💖 [Hellbot](https://github.com/The-hellbot/Hellbot)
 ------
