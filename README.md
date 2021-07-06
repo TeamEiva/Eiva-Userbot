@@ -47,10 +47,10 @@
 
 - Clone the repo. 
 
-`git clone https://github.com/TheVaders/InVade.git`
+`git clone https://github.com/TeamEiva/Eiva-Userbot.git`
 - Open Cloned Folder.
 
-`cd InVade`
+`cd Eiva-Userbot`
 - Create VirtualEnv.
 
 `virtualenv -p /usr/bin/python3 venv`
@@ -63,7 +63,7 @@
 
 `python Eiva_string.py`
 - Create config.py or rename ex_config.py to config.py. Fill All The Required Variables.
-- Finally Start Hêllẞø† By
+- Finally Start ΣIVΛ-ЦSΣΓBθƬ By
 
 `bash start.sh`
 
