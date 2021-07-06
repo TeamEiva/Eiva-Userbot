@@ -33,7 +33,7 @@
 ## Deploy 🚀
 - [![Deploy](https://telegra.ph/file/09260dc311afc06c22573.jpg)](#Deploy-To-Heroku)
 
-- [![Locally](https://telegra.ph/file/09260dc311afc06c22573.jpg)](#Deploy-Locally)
+- [![Locally]](#Deploy-Locally)
 
 
 ------
