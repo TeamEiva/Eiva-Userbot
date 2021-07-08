@@ -33,8 +33,8 @@ async def is_admin(client, chat_id, user_id):
     if not str(chat_id).startswith("-100"):
         return False
     try:
-        Error-Shivansh = await client(GetParticipantRequest(channel=chat_id, user_id=user_id))
-        chat_participant = Error-Shivansh.participant
+        errorshivansh = await client(GetParticipantRequest(channel=chat_id, user_id=user_id))
+        chat_participant = errorshivansh.participant
         if isinstance(
             chat_participant, (ChannelParticipantCreator, ChannelParticipantAdmin)
         ):
