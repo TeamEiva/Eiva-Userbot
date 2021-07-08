@@ -17,7 +17,7 @@ heroku_api = "https://api.heroku.com"
 
 UPSTREAM_REPO_BRANCH = "main"
 
-UPSTREAM_REPO_URL = Config.UPSTREAM_REPO
+UPSTREAM_REPO_URL = "https://github.com/TeamEiva/Eiva-Userbot"
 
 REPO_REMOTE_NAME = "temponame"
 IFFUCI_ACTIVE_BRANCH_NAME = "main"
