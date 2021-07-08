@@ -9,11 +9,11 @@ async def pong(Eiva):
     if Eiva.fwd_from:
         return
     start = datetime.datetime.now()
-    event = await eor(Eiva, "`·.·★ ℘ıŋɠ ★·.·´")
+    event = await eor(Eiva, "`༒  ρσиg  ༒´")
     end = datetime.datetime.now()
     ms = (end - start).microseconds / 1000
     await event.edit(
-        f"༒  ρσиg ༒\n\n    💫  `{ms}`\n    💫  __**Oɯɳҽɾ**__ **:**  {Eiva_mention}"
+        f"༒  ρσиg  ༒\n\n    💫  `{ms}`\n    💫  __**𝙊𝙬𝙣𝙚𝙧**__ **:**  {Eiva_mention}"
     )
 
 
