@@ -94,7 +94,7 @@
 - Open the terminal.
 - Paste this code.
 
-`pkg install python wget -y && pip install telethon && wget https://raw.githubusercontent.com/TeamEiva/Eiva-Userbot/master/Eiva_string.py && python3 Eiva_string.py`
+`pkg install python wget -y && pip install telethon && wget https://raw.githubusercontent.com/TeamEiva/Eiva-Userbot/main/Eiva_string.py && python3 Eiva_string.py`
 - Fill API ID, API HASH, Phone number (with country code).
 - Paste the OTP received on Telegram.
 - If You have Enabled 2-Step Verification then fill your password.
