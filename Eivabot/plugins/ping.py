@@ -13,7 +13,7 @@ async def pong(Eiva):
     end = datetime.datetime.now()
     ms = (end - start).microseconds / 1000
     await event.edit(
-        f"༒  ρσиg  ༒\n\n    💫  `{ms}`\n    💫  __**𝙊𝙬𝙣𝙚𝙧**__ **:**  {Eiva_mention}"
+        f"༒  ρσиg  ༒\n\n    💫  `{ms}`\n    💫  __**ᴏᴡɴᴇʀ**__ **:**  {Eiva_mention}"
     )
 
 
