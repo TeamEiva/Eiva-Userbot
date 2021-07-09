@@ -11,11 +11,11 @@ from . import *
 
 Eiva_pic = Config.ALIVE_PIC or "https://telegra.ph/file/5501c52fed1b2229ad03d.jpg"
 alive_c = f"__**🔥🔥єιναϐοτ ιѕ οиℓιиє🔥🔥**__\n\n"
-alive_c += f"__↼ Øwñêr ⇀__ : 『 {Eiva_mention} 』\n\n"
-alive_c += f"•♦• Telethon     :  `{tel_ver}` \n"
-alive_c += f"•♦• ΣIVΛBθƬ       :  __**{Eiva_ver}**__\n"
-alive_c += f"•♦• Sudo            :  `{is_sudo}`\n"
-alive_c += f"•♦• Channel      :  {Eiva_channel}\n"
+alive_c += f"__↼ Oɯɳҽɾ ⇀__ : 『 {Eiva_mention} 』\n\n"
+alive_c += f"•♦• Tҽʅҽƚԋσɳ    :  `{tel_ver}` \n"
+alive_c += f"•♦• EιʋαVҽɾʂισɳ      :  __**{Eiva_ver}**__\n"
+alive_c += f"•♦• Sυԃσ           :  `{is_sudo}`\n"
+alive_c += f"•♦• Cԋαɳɳҽʅ     :  {Eiva_channel}\n"
 
 #-------------------------------------------------------------------------------
 
