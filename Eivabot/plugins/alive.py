@@ -32,12 +32,12 @@ async def up(Eiva):
 msg = f"""
 **⚡ ΣIVΛBθƬ IS θПLIПΣ ⚡ **
 {Config.ALIVE_MSG}
-**🏅 𝙱𝚘𝚝 𝚂𝚝𝚊𝚝𝚞𝚜 🏅**
-**Telethon :**  `{tel_ver}`
+**🏅 BθƬ SƬΛƬЦS 🏅**
+**ƬΣLΣƬΉθП :**  `{tel_ver}`
 **ΣIVΛBθƬ  :**  **{Eiva_ver}**
-**Uptime   :**  `{uptime}`
-**Abuse    :**  **{abuse_m}**
-**Sudo      :**  **{is_sudo}**
+**ЦPƬIMΣ   :**  `{uptime}`
+**ΛBЦSΣ    :**  **{abuse_m}**
+**SЦDθ     :**  **{is_sudo}**
 """
 botname = Config.BOT_USERNAME
 
