@@ -20,7 +20,7 @@ class Development(Config):
   # Do `python string.py` and fill the on screen prompts.
   # String session will be saved in your saved message of telegram.
   # Put that string here.
-  EivaBOT_SESSION = "Your value"
+  EIVABOT_SESSION = "Your value"
 
   # Create a bot in @BotFather
   # And fill the following values with bot token and username.
