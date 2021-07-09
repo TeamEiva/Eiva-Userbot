@@ -9,7 +9,7 @@ from . import *
 
 #-------------------------------------------------------------------------------
 
-Eiva_pic = Config.ALIVE_PIC or "https://telegra.ph/file/5501c52fed1b2229ad03d.jpg"
+Eiva_pic = Config.ALIVE_PIC or "https://telegra.ph/file/cca0cd6ee5e1939ebf1c9.jpg"
 alive_c = f"__**🔥🔥єιναϐοτ ιѕ οиℓιиє🔥🔥**__\n\n"
 alive_c += f"__↼ Oɯɳҽɾ ⇀__ : 『 {Eiva_mention} 』\n\n"
 alive_c += f"•♦• Tҽʅҽƚԋσɳ    :  `{tel_ver}` \n"
