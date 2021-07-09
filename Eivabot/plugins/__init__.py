@@ -41,8 +41,8 @@ else:
 
 START_TIME = datetime.datetime.now()
 uptime = f"{str(datetime.datetime.now() - START_TIME).split('.')[0]}"
-my_channel = Config.MY_CHANNEL or "Its_EivaBot"
-my_group = Config.MY_GROUP or "EivaBot_Chat"
+my_channel = Config.MY_CHANNEL or "TheEiva"
+my_group = Config.MY_GROUP or "Eivasupport"
 if "@" in my_channel:
     my_channel = my_channel.replace("@", "")
 if "@" in my_group:
