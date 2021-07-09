@@ -13,7 +13,7 @@ class Config(object):
     LOGGER = True
     ABUSE = os.environ.get("ABUSE", None)
     ALIVE_MSG = os.environ.get("ALIVE_MSG", "⚡ ㄥ乇Ꮆ乇几ᗪ卂尺ㄚ 卂千 乇丨ᐯ卂乃ㄖㄒ⚡")
-    ALIVE_PIC = os.environ.get("ALIVE_PIC", "https://telegra.ph/file/5501c52fed1b2229ad03d.jpg")
+    ALIVE_PIC = os.environ.get("ALIVE_PIC", "https://telegra.ph/file/cca0cd6ee5e1939ebf1c9.jpg")
     ANTI_FLOOD_WARN_MODE = ChatBannedRights(
         until_date=None,
         view_messages=None,
@@ -77,7 +77,7 @@ class Config(object):
     if PM_LOG_ID:
         PM_LOG_ID = int(PM_LOG_ID)
     PM_PERMIT = os.environ.get("PM_PERMIT", "ENABLE")
-    PMPERMIT_PIC = os.environ.get("PMPERMIT_PIC", "https://telegra.ph/file/5501c52fed1b2229ad03d.jpg")
+    PMPERMIT_PIC = os.environ.get("PMPERMIT_PIC", "https://telegra.ph/file/cca0cd6ee5e1939ebf1c9.jpg")
     REMOVE_BG_API = os.environ.get("REMOVE_BG_API", None)
     SCREEN_SHOT_LAYER_ACCESS_KEY = os.environ.get("SCREEN_SHOT_LAYER_ACCESS_KEY", None)
     STICKER_PACKNAME = os.environ.get("STICKER_PACKNAME", None)
