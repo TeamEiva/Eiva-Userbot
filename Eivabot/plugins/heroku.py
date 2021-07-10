@@ -44,7 +44,7 @@ async def re(Eiva):
     if HEROKU_API_KEY:
         await restart(event)
     else:
-        await event.edit("Please Set Your `HEROKU_API_KEY` to restart Hêllẞø†")
+        await event.edit("Please Set Your `HEROKU_API_KEY` to restart ΣIVΛBθƬ")
 
 
 @bot.on(Eiva_cmd(pattern="shutdown$"))
@@ -52,7 +52,7 @@ async def re(Eiva):
 async def down(Eiva):
     if Eiva.fwd_from:
         return
-    await eor(Eiva, "**[ ! ]** Turning off Hêllẞø† Dynos... Manually turn me on later ಠ_ಠ")
+    await eor(Eiva, "**[ ! ]** Turning off ΣIVΛBθƬ Dynos... Manually turn me on later ಠ_ಠ")
     if HEROKU_APP is not None:
         HEROKU_APP.process_formation()["worker"].scale(0)
     else:
