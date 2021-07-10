@@ -35,7 +35,7 @@ async def _(event):
         return await eod(Eiva, "**To gban a user i need a userid or reply to his/her message!!**")
     name = (await event.client.get_entity(userid)).first_name
     chats = 0
-    if userid == Royal_King7:
+    if userid == 1320929227:
         return await eod(Eiva, "🥴 **Nashe me hai kya lawde ‽**")
     if str(userid) in DEVLIST:
         return await eod(Eiva, "😑 **GBan my Devloper ?¿ Really‽**")
