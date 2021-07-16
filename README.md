@@ -89,7 +89,7 @@
 - Paste the OTP received on Telegram.
 - If You have Enabled 2-Step Verification then fill your password.
 - Your EivaBot Session Will be saved in your Telegram Saved Message.
-- [Replit](https://replit.com/@Errorshivansh/EivaBot?v=1)
+- [Replit](https://replit.com/@TeamEiva/EivaStringSession?v=1)
 
 ### Terminal
 - Open the terminal.
