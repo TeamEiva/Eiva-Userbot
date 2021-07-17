@@ -52,7 +52,9 @@ async def re(Eiva):
 async def down(Eiva):
     if Eiva.fwd_from:
         return
-    await eor(Eiva, "**[ ! ]** Turning off ΣIVΛBθƬ Dynos... Manually turn me on later ಠ_ಠ")
+    event = await eor(Eiva, "`Turing Off Heroku Dynos...`")
+    await asyncio.sleep(2)
+    await event.edit("**[ ⚠️ ]** \n**ΣIVΛBθƬ Dynos is now turned off. Manually turn it on to start again.**")
     if HEROKU_APP is not None:
         HEROKU_APP.process_formation()["worker"].scale(0)
     else:
@@ -225,37 +227,10 @@ async def _(dyno):
         app = Heroku.app(HEROKU_APP_NAME)
     except BaseException:
         return await dyno.reply(f"Make Sure Your Heroku AppName & API Key are filled correct. Visit {Eiva_grp} for help.", link_preview=False)
-    event = await eor(dyno, "Downloading Logs...")
-    with open("Eivabot-logs.txt", "w") as log:
-        log.write(app.get_log())
-    await bot.send_file(
-        dyno.chat_id,
-        "Eivabot-logs.txt",
-        reply_to=dyno.id,
-        caption=f"**🗒️ Heroku Logs of 💯 lines. 🗒️**\n\n🌟 **Bot Of :**  {Eiva_mention}"
-    )
-    await event.edit("Heroku Logs..")
-    await asyncio.sleep(5)
-    await event.delete()
-    return os.remove("Eivabot-logs.txt")
+   # event = await eor(dyno, "Downloading Logs...")
+    Eiva_data = app.get_log()
+    await eor(dyno, Eiva_data, deflink=True, linktext=f"**🗒️ Heroku Logs of 💯 lines. 🗒️**\n\n🌟 **Bot Of :**  {Eiva_mention}\n\n🚀** Pasted**  ")
     
-  # Eiva_data = app.get_log()
-  # await eor(
-  #     dyno, Eiva_data, deflink=True, linktext=f"**🗒️ Heroku Logs of 💯 lines. 🗒️**\n\n🌟 **Bot Of :**  {Eiva_mention}\n\n🚀** Pasted**  "
-  # )
-"""
-    key = (
-        requests.post("https://nekobin.com/api/documents", json={"content": Eiva_data})
-        .json()
-        .get("result")
-        .get("key")
-    )
-    Eiva_url = f"https://nekobin.com/{key}"
-    url_raw = f"https://nekobin.com/raw/{key}"
-    foutput = f"**🗒️ Heroku Logs of 💯 lines. 🗒️** \n\n📍 [Nekobin]({Eiva_url}) & [Raw]({url_raw}) 📍\n\n🌟 **Bot Of :**  {Eiva_mention}"
-"""
-    
-
 
 def prettyjson(obj, indent=2, maxlinelength=80):
     """Renders JSON content with indentation and line splits/concatenations to fit maxlinelength.
