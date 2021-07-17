@@ -100,7 +100,7 @@ async def Eiva_is_on():
 
 # Why not come here and chat??
     try:
-        await bot(JoinChannelRequest("@HellBot_Chat"))
+        await bot(JoinChannelRequest("@EivaSupport"))
     except BaseException:
         pass
 
