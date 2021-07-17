@@ -52,7 +52,11 @@ async def re(Eiva):
 async def down(Eiva):
     if Eiva.fwd_from:
         return
-    await eor(Eiva, "**[ ! ]** Turning off ΣIVΛBθƬ Dynos... Manually turn me on later ಠ_ಠ")
+    event = await eor(hell, "`Turing Off Heroku Dynos...`")
+
+    await asyncio.sleep(2)
+
+    await event.edit("**[ ⚠️ ]** \n**ΣIVΛBθƬ Dynos is now turned off. Manually turn it on to start again.**")
     if HEROKU_APP is not None:
         HEROKU_APP.process_formation()["worker"].scale(0)
     else:
