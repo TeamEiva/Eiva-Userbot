@@ -55,6 +55,23 @@ for name in files:
         shortname = path1.stem
         load_module(shortname.replace(".py", ""))
 
+# Extra Modules...
+extra_repo = Config.EXTRA_REPO or "https://github.com/TeamEiva/Extra"
+if Config.EXTRA == "True":
+    try:
+        os.system(f"git clone {extra_repo}")
+    except BaseException:
+        pass
+    LOGS.info("Installing Extra Plugins")
+    path = "hellbot/plugins/*.py"
+    files = glob.glob(path)
+    for name in files:
+        with open(name) as ex:
+            path2 = Path(ex.name)
+            shortname = path2.stem
+            load_module(shortname.replace(".py", ""))
+
+
 # let the party begin...
 LOGS.info("Starting Bot Mode !")
 tbot.start()
@@ -80,6 +97,13 @@ async def Eiva_is_on():
         await bot(JoinChannelRequest("@TheEiva"))
     except BaseException:
         pass
+
+# Why not come here and chat??
+    try:
+        await bot(JoinChannelRequest("@HellBot_Chat"))
+    except BaseException:
+        pass
+
 
 
 bot.loop.create_task(Eiva_is_on())
