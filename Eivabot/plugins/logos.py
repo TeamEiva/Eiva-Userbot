@@ -13,7 +13,7 @@ PICS_STR = []
 @bot.on(Eiva_cmd(pattern=r"logo ?(.*)"))
 @bot.on(sudo_cmd(pattern=r"logo ?(.*)", allow_sudo=True))
 async def lg1(Eivaevent):
-    event = await event.edit("`Processing.....`")
+    event = await eor(Eivaevent, "`Processing.....`")
     fnt = await get_font_file(Eivaevent.client, "@Eiva_FRONTS")
     if Eivaevent.reply_to_msg_id:
         rply = await Eivaevent.get_reply_message()
