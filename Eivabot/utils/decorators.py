@@ -19,7 +19,6 @@ from telethon.tl.types import ChannelParticipantAdmin, ChannelParticipantCreator
 from Eivabot import *
 from Eivabot.helpers import *
 from Eivabot.config import Config
-from Eivabot.sql import sudo_sql as s_ql
 
 # admin cmd or normal user cmd
 def Eiva_cmd(pattern=None, command=None, **args):
