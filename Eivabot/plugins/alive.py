@@ -9,14 +9,24 @@ from . import *
 
 #-------------------------------------------------------------------------------
 
-Eiva_pic = Config.ALIVE_PIC or "https://telegra.ph/file/cca0cd6ee5e1939ebf1c9.jpg"
-alive_c = f"__**🔥🔥єιναϐοτ ιѕ οиℓιиє🔥🔥**__\n\n"
-alive_c += f"__↼ Oɯɳҽɾ ⇀__ : 『 {Eiva_mention} 』\n\n"
-alive_c += f"•♦• Tҽʅҽƚԋσɳ    :  `{tel_ver}` \n"
-alive_c += f"•♦• EιʋαVҽɾʂισɳ      :  __**{Eiva_ver}**__\n"
-alive_c += f"•♦• Sυԃσ           :  `{is_sudo}`\n"
-alive_c += f"•♦• Cԋαɳɳҽʅ     :  {Eiva_channel}\n"
+Eiva_pic = Config.ALIVE_PIC or "https://telegra.ph/file/983d8452ac533a8c8d678.jpg"
 
+
+apic=f"""
+Eiva Userbot.
+
+ Master ,  I am alive.
+
+ ┏━━━━━━━━━━━━━━━━━━━━━
+ ┣ Owner - {Eiva_mention}
+ ┣ Version - {Eiva_ver}
+ ┣ Updates - No update
+ ┣ UpTime - 1h:8m:46s
+ ┣ Python - 3.9.5
+ ┣ Telethon - `{tel_ver}`
+ ┣ Branch -  main 
+ ┗━━━━━━━━━━━━━━━━━━━━━
+"""
 #-------------------------------------------------------------------------------
 
 @bot.on(Eiva_cmd(outgoing=True, pattern="alive$"))
@@ -26,7 +36,7 @@ async def up(Eiva):
         return
     await Eiva.get_chat()
     await Eiva.delete()
-    await bot.send_file(Eiva.chat_id, Eiva_pic, caption=alive_c)
+    await bot.send_file(Eiva.chat_id, apic, caption=alive_c)
     await Eiva.delete()
 
 msg = f"""
