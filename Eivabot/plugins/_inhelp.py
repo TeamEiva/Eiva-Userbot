@@ -108,7 +108,7 @@ if Config.BOT_USERNAME is not None and tgbot is not None:
                     apn.append(y)
             result = await builder.article(
                 f"Hey! Only use .help please",
-                text=f"🔰 **{Eiva_mention}**\n\n📜 __No.of Plugins__ : `{len(CMD_HELP)}` \n🗂️ __Commands__ : `{len(apn)}`\n🗒️ __Page__ : 1/{veriler[0]}",
+                text=f"Eiva[🤖](https://telegra.ph/file/0fc1937fabe3e0591a4ba.png)\n\n 🔰 **{Eiva_mention}**\n\n📜 __No.of Plugins__ : `{len(CMD_HELP)}` \n🗂️ __Commands__ : `{len(apn)}`\n🗒️ __Page__ : 1/{veriler[0]}",
                 buttons=veriler[1],
                 link_preview=False,
             )
