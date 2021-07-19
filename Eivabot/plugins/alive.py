@@ -35,7 +35,7 @@ async def up(Eiva):
     if Eiva.fwd_from:
         return
     await Eiva.get_chat()
-    await bot.send_file(Eiva.chat_id, apic, caption=alive_c)
+    await bot.send_file(Eiva.chat_id, Eiva_pic, caption=apic)
     await Eiva.delete()
 
 msg = f"""
