@@ -110,7 +110,7 @@ if Config.BOT_USERNAME is not None and tgbot is not None:
                 f"Hey! Only use .help please",
                 text=f"Eiva[🤖](https://telegra.ph/file/0fc1937fabe3e0591a4ba.png)\n\n 🔰 **{Eiva_mention}**\n\n📜 __No.of Plugins__ : `{len(CMD_HELP)}` \n🗂️ __Commands__ : `{len(apn)}`\n🗒️ __Page__ : 1/{veriler[0]}",
                 buttons=veriler[1],
-                link_preview=False,
+                link_preview=True,
             )
         elif event.query.user_id == bot.uid and query.startswith("fsub"):
             hunter = event.pattern_match.group(1)
