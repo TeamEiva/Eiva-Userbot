@@ -99,10 +99,10 @@ async def Eiva_is_on():
         pass
 
 # Why not come here and chat??
-    try:
-        await bot(JoinChannelRequest("@EivaSupport"))
-    except BaseException:
-        pass
+#    try:
+#        await bot(JoinChannelRequest("@EivaSupport"))
+#    except BaseException:
+ #       pass
 
 
 
