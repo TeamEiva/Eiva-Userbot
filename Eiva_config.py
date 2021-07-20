@@ -32,7 +32,7 @@ class Config(object):
     BOT_HANDLER = os.environ.get("BOT_HANDLER", "\/")
     BOT_TOKEN = os.environ.get("BOT_TOKEN", None)
     BOT_USERNAME = os.environ.get("BOT_USERNAME", None)
-    BUTTONS_IN_HELP = int(os.environ.get("BUTTONS_IN_HELP", 7))
+    BUTTONS_IN_HELP = int(os.environ.get("BUTTONS_IN_HELP", 5))
     CHATS_TO_MONITOR_FOR_ANTI_FLOOD = []
     CHROME_BIN = os.environ.get("CHROME_BIN", "/app/.apt/usr/bin/google-chrome")
     CHROME_DRIVER = os.environ.get("CHROME_DRIVER", "/app/.chromedriver/bin/chromedriver")
