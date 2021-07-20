@@ -93,10 +93,10 @@ async def Eiva_is_on():
         LOGS.info(str(e))
 
 # Join EivaBot Channel after deploying 🤐😅
-#    try:
-#        await bot(JoinChannelRequest("@TheEiva"))
-#    except BaseException:
-#        pass
+    try:
+        await bot(JoinChannelRequest("@TheEiva"))
+    except BaseException:
+        pass
 
 # Why not come here and chat??
     try:
