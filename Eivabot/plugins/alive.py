@@ -13,18 +13,18 @@ Eiva_pic = Config.ALIVE_PIC or "https://telegra.ph/file/983d8452ac533a8c8d678.jp
 
 
 apic=f"""
-Eiva Userbot.
+єινα υsєявσт...
 
- Master ,  I am alive.
+  Mαsтєя ,  I αм αlινє.
 
  ┏━━━━━━━━━━━━━━━━━━━━━
- ┣ Owner - {Eiva_mention}
- ┣ Version - {Eiva_ver}
- ┣ Updates - No update
- ┣ UpTime - 1h:8m:46s
- ┣ Python - 3.9.5
- ┣ Telethon - `{tel_ver}`
- ┣ Branch -  main 
+ ┣ θωηєя - {Eiva_mention}
+ ┣ Vєяsιση - {Eiva_ver}
+ ┣ Цρ∂αтєs - Пσ υρ∂αтє
+ ┣ ЦρƬιмє - 1h:8m:46s
+ ┣ Pyтнση - 3.9.5
+ ┣ Ƭєlєтнση - `{tel_ver}`
+ ┣ Bяαη¢н -  мαιη 
  ┗━━━━━━━━━━━━━━━━━━━━━
 """
 #-------------------------------------------------------------------------------
