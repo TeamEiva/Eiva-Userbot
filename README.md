@@ -53,7 +53,7 @@
 ###### Railway Support by Team Eiva 
 
 ## Deploy Qovery 
--[![Deploy](https://www.Qoverycnd.com/deploy.button.svg)](http://qovery.com)
+-[![Deploy]](http://qovery.com)
 
 ## Deploy Locally
 
