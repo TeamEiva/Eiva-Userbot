@@ -37,6 +37,8 @@
 
 - [Railway](#Deploy-Railway)
 
+- [Qovery](#Deploy-Qovery)
+
 
 ------
 ## Deploy To Heroku
@@ -48,7 +50,10 @@
 
 ## Deploy Railway
 ###### Button coming soon just fork this repo go to railway.app and sign in and connect your fork repo and fill env manually after deploy in variables section
-###### Railway Support by Team Eiva
+###### Railway Support by Team Eiva 
+
+## Deploy Qovery 
+-[![Deploy](https://www.Qoverycnd.com/deploy.button.svg)](http://qovery.com)
 
 ## Deploy Locally
 
