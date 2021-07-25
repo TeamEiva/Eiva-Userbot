@@ -34,6 +34,8 @@
 - [Deploy](#Deploy-To-Heroku)
 
 - [Locally](#Deploy-Locally)
+- 
+- [Railway](#Deploy-Railway)
 
 
 ------
@@ -43,6 +45,10 @@
 - [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/TeamEiva/Eivabot)
 
 ------
+
+## Deploy Railway
+###### Button coming soon just fork this repo go to railway.app and sign in and connect your fork repo and fill env manually after deploy in variables section
+###### Railway Support by Noob Stranger
 
 ## Deploy Locally
 
