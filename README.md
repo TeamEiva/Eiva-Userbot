@@ -34,7 +34,7 @@
 - [Deploy](#Deploy-To-Heroku)
 
 - [Locally](#Deploy-Locally)
-- 
+
 - [Railway](#Deploy-Railway)
 
 
@@ -48,7 +48,7 @@
 
 ## Deploy Railway
 ###### Button coming soon just fork this repo go to railway.app and sign in and connect your fork repo and fill env manually after deploy in variables section
-###### Railway Support by Noob Stranger
+###### Railway Support by Team Eiva
 
 ## Deploy Locally
 
