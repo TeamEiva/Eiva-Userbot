@@ -53,7 +53,8 @@
 ###### Railway Support by Team Eiva 
 
 ## Deploy Qovery 
--[![Deploy]](http://qovery.com)
+-[Deploy](http://qovery.com) Fork And Deploy To Qovery , Tutorial Comming Soon
+
 
 ## Deploy Locally
 
