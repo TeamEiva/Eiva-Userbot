@@ -378,7 +378,7 @@ async def _(event):
 
     animation_interval = 0.5
 
-    animation_ttl = range(0, 101)
+    animation_ttl = range(101)
 
     await eor(event, "phub")
 
@@ -410,7 +410,7 @@ async def _(event):
 
     animation_interval = 0.5
 
-    animation_ttl = range(0, 101)
+    animation_ttl = range(101)
 
     await eor(event, "amore")
 
@@ -441,7 +441,7 @@ async def _(event):
 
     animation_interval = 0.5
 
-    animation_ttl = range(0, 101)
+    animation_ttl = range(101)
 
     await eor(event, "Sexy")
 
@@ -465,15 +465,15 @@ async def _(event):
 async def ammastar(Eivastar):
   
     if Eivastar.fwd_from:
-      
+
         return
-      
+
     animation_interval = 2
-    
-    animation_ttl = range(0, 11)
-    
+
+    animation_ttl = range(11)
+
     await eor(Eivastar, "I am A Star")
-    
+
     animation_chars = [
         "I Party like a rockstar",
         "I Look like a movie star",
@@ -481,11 +481,11 @@ async def ammastar(Eivastar):
         "I Fuck like a pornstar",
         "Baby I'm a superstar",
     ]
-    
+
     for i in animation_ttl:
-      
+
         await asyncio.sleep(animation_interval)
-        
+
         await Eivastar.edit(animation_chars[i % 11])
     
         
@@ -552,10 +552,8 @@ async def _(event):
 
     animation_interval = 0.5
 
-    animation_ttl = range(0, 11)
-
+    animation_ttl = range(11)
   #  input_str = event.pattern_match.group(1)
-
   #  if input_str == "switch":
 
     await eor(event, "Switch")

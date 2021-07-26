@@ -13,7 +13,7 @@ async def install(event):
     chat = Config.PLUGIN_CHANNEL
     documentss = await bot.get_messages(chat, None, filter=InputMessagesFilterDocument)
     total = int(documentss.total)
-    total_doxx = range(0, total)
+    total_doxx = range(total)
     await event.delete()
     for ixo in total_doxx:
         mxo = documentss[ixo].id
@@ -49,7 +49,7 @@ async def install(event):
     )
     documentss = await bot.get_messages(chat, None, filter=InputMessagesFilterDocument)
     total = int(documentss.total)
-    total_doxx = range(0, total)
+    total_doxx = range(total)
     for ixo in total_doxx:
         mxo = documentss[ixo].id
         downloaded_file_name = await event.client.download_media(

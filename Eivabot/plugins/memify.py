@@ -73,11 +73,10 @@ async def nope(kraken):
     if not Eiva:
         if kraken.is_reply:
             (await kraken.get_reply_message()).message
+        elif Config.ABUSE == "ON":
+            return await eor(kraken, "Abe chumtiye kuch likhne ke liye de")
         else:
-            if Config.ABUSE == "ON":
-                return await eor(kraken, "Abe chumtiye kuch likhne ke liye de")
-            else:
-                return await eor(kraken, "Doge need some text to make sticker.")
+            return await eor(kraken, "Doge need some text to make sticker.")
 
     troll = await bot.inline_query("DogeStickerBot", f"{(deEmojify(Eiva))}")
     if troll:
