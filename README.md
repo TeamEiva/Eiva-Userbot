@@ -1,6 +1,6 @@
 <h1 align="center">
   <b>ΣIVΛ-ЦSΣΓBθƬ</b>
-</h1>
+</h1> 
 
 <p align="center">
   <img src="https://telegra.ph/file/01acbca0956904a6102fb.jpg" alt="Eiva">
