@@ -19,7 +19,6 @@ async def kk(event):
     if event.reply_to_msg_id:
         reply_to_id = event.reply_to_msg_id
     cmd = "ls Eivabot/plugins"
-    thumb = Eiva_logo
     process = await asyncio.create_subprocess_sEiva(
         cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
     )
@@ -29,6 +28,7 @@ async def kk(event):
     o = "\n".join(_o)
     OUTPUT = f"List of Plugins in bot :- \n\n{o}\n\n<><><><><><><><><><><><><><><><><><><><><><><><>\nHELP:- If you want to know the commands for a plugin, do :- \n.plinfo <plugin name> without the < > brackets. \nJoin {Eiva_grp} for help."
     if len(OUTPUT) > 69:
+        thumb = Eiva_logo
         with io.BytesIO(str.encode(OUTPUT)) as out_file:
             out_file.name = "cmd_list.text"
             Eiva_file = await bot.send_file(
@@ -49,11 +49,11 @@ async def send(event):
     if event.fwd_from:
         return
     message_id = event.message.id
-    thumb = Eiva_logo
     input_str = event.pattern_match.group(1)
     omk = f"**• Plugin name ≈** `{input_str}`\n**• Uploaded by ≈** {Eiva_mention}\n\n⚡ **[ɛɢɛռɖαʀʏ ᴀғ єιναϐοτ]({chnl_link})** ⚡"
     the_plugin_file = "./Eivabot/plugins/{}.py".format(input_str)
     if os.path.exists(the_plugin_file):
+        thumb = Eiva_logo
         lauda = await event.client.send_file(
             event.chat_id,
             the_plugin_file,

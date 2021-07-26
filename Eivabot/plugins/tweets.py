@@ -16,9 +16,10 @@ async def nope(kraken):
     await tweeter[0].click(
         kraken.chat_id,
         reply_to=kraken.reply_to_msg_id,
-        silent=True if kraken.is_reply else False,
+        silent=bool(kraken.is_reply),
         hide_via=True,
     )
+
     await kraken.delete()
 
 
@@ -30,12 +31,8 @@ async def nekobot(event):
     if event.reply_to_msg_id:
         reply_to_id = await event.get_reply_message()
     if not text:
-        if event.is_reply:
-            if not reply_to_id.media:
-                text = reply_to_id.message
-            else:
-                await eod(event, "Trump needs some text to tweet..")
-                return
+        if event.is_reply and not reply_to_id.media:
+            text = reply_to_id.message
         else:
             await eod(event, "Trump needs some text to tweet..")
             return
@@ -96,12 +93,8 @@ async def nekobot(event):
     if event.reply_to_msg_id:
         reply_to_id = await event.get_reply_message()
     if not text:
-        if event.is_reply:
-            if not reply_to_id.media:
-                text = reply_to_id.message
-            else:
-                await eod(event, "Send your text to Mia so she can tweet.")
-                return
+        if event.is_reply and not reply_to_id.media:
+            text = reply_to_id.message
         else:
             await eod(event, "Send your text to Mia so she can tweet.")
             return
@@ -129,12 +122,8 @@ async def nekobot(event):
     if event.reply_to_msg_id:
         reply_to_id = await event.get_reply_message()
     if not text:
-        if event.is_reply:
-            if not reply_to_id.media:
-                text = reply_to_id.message
-            else:
-                await eod(event, "Send your text to Dani so she can tweet.")
-                return
+        if event.is_reply and not reply_to_id.media:
+            text = reply_to_id.message
         else:
             await eod(event, "Send your text to Dani so she can tweet.")
             return
@@ -295,12 +284,8 @@ async def nekobot(event):
     if event.reply_to_msg_id:
         reply_to_id = await event.get_reply_message()
     if not text:
-        if event.is_reply:
-            if not reply_to_id.media:
-                text = reply_to_id.message
-            else:
-                await eod(event, "Give text for to write on banner, man")
-                return
+        if event.is_reply and not reply_to_id.media:
+            text = reply_to_id.message
         else:
             await eod(event, "Give text for to write on banner, man")
             return

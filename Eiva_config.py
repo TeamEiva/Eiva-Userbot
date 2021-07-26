@@ -9,7 +9,9 @@ import os
 from telethon.tl.types import ChatBannedRights
 
 
-class Config(object):
+
+
+class Config((object)):
     LOGGER = True
     ABUSE = os.environ.get("ABUSE", None)
     ALIVE_MSG = os.environ.get("ALIVE_MSG", "⚡ ㄥ乇Ꮆ乇几ᗪ卂尺ㄚ 卂千 乇丨ᐯ卂乃ㄖㄒ⚡")
@@ -24,11 +26,10 @@ class Config(object):
     AUTH_TOKEN_DATA = os.environ.get("AUTH_TOKEN_DATA", None)
     if AUTH_TOKEN_DATA != None:
         os.makedirs(TMP_DOWNLOAD_DIRECTORY)
-        t_file = open(TMP_DOWNLOAD_DIRECTORY+"auth_token.txt","w")
-        t_file.write(AUTH_TOKEN_DATA)
-        t_file.close()
+        with open(TMP_DOWNLOAD_DIRECTORY+"auth_token.txt","w") as t_file:
+            t_file.write(AUTH_TOKEN_DATA)
     BIO_MSG = os.environ.get("BIO_MSG", "ㄥ乇Ꮆ乇几ᗪ卂尺ㄚ 卂千 乇丨ᐯ卂乃ㄖㄒ")
-    BL_CHAT = set(int(x) for x in os.environ.get("BL_CHAT", "").split())
+    BL_CHAT = {int(x) for x in os.environ.get("BL_CHAT", "").split()}
     BOT_HANDLER = os.environ.get("BOT_HANDLER", "\/")
     BOT_TOKEN = os.environ.get("BOT_TOKEN", None)
     BOT_USERNAME = os.environ.get("BOT_USERNAME", None)
@@ -87,7 +88,7 @@ class Config(object):
     STICKER_PACKNAME = os.environ.get("STICKER_PACKNAME", None)
     EivaBOT_SESSION = os.environ.get("EivaBOT_SESSION", None)
     SUDO_HANDLER = os.environ.get("SUDO_HANDLER", r"\.")
-    SUDO_USERS = set(int(x) for x in os.environ.get("SUDO_USERS", "").split())
+    SUDO_USERS = {int(x) for x in os.environ.get("SUDO_USERS", "").split()}
     TAG_LOGGER = os.environ.get("TAG_LOGGER", None)
     if TAG_LOGGER: 
         TAG_LOGGER = int(TAG_LOGGER)
@@ -99,6 +100,7 @@ class Config(object):
     WEATHER_API = os.environ.get("WEATHER_API", None)
     YOUR_NAME = os.environ.get("YOUR_NAME", None)
     YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY", None)
+
 
 
 class Production(Config):

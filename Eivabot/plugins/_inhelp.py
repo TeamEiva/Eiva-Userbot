@@ -27,10 +27,7 @@ PM_WARNS = {}
 PREV_REPLY_MESSAGE = {}
 
 mybot = Config.BOT_USERNAME
-if mybot.startswith("@"):
-    botname = mybot
-else:
-    botname = f"@{mybot}"
+botname = mybot if mybot.startswith("@") else f"@{mybot}"
 LOG_GP = Config.LOGGER_ID
 mssge = (
     str(cstm_pmp)
@@ -67,14 +64,16 @@ def button(page, modules):
         pairs.append([modules[-1]])
     max_pages = ceil(len(pairs) / Row)
     pairs = [pairs[i : i + Row] for i in range(0, len(pairs), Row)]
-    buttons = []
-    for pairs in pairs[page]:
-        buttons.append(
-            [
-                custom.Button.inline(f"{Eiva_emoji} " + pair + f" {Eiva_emoji}", data=f"Information[{page}]({pair})")
-                for pair in pairs
-            ]
-        )
+    buttons = [
+        [
+            custom.Button.inline(
+                f"{Eiva_emoji} " + pair + f" {Eiva_emoji}",
+                data=f"Information[{page}]({pair})",
+            )
+            for pair in pairs
+        ]
+        for pairs in pairs[page]
+    ]
 
     buttons.append(
         [
@@ -90,9 +89,6 @@ def button(page, modules):
         ]
     )
     return [max_pages, buttons]
-
-
-    modules = CMD_HELP
 if Config.BOT_USERNAME is not None and tgbot is not None:
     @tgbot.on(InlineQuery)  # pylint:disable=E0602
     async def inline_handler(event):
@@ -295,7 +291,7 @@ if Config.BOT_USERNAME is not None and tgbot is not None:
     async def on_pm_click(event):
         hunter = (event.data_match.group(1)).decode("UTF-8")
         Eiva = hunter.split("+")
-        if not event.sender_id == int(Eiva[0]):
+        if event.sender_id != int(Eiva[0]):
             return await event.answer("This Ain't For You!!", alert=True)
         try:
             await bot(GetParticipantRequest(int(Eiva[1]), int(Eiva[0])))
@@ -404,10 +400,10 @@ if Config.BOT_USERNAME is not None and tgbot is not None:
         commands = event.data_match.group(3).decode("UTF-8")
         result = f"**📗 File :**  `{cmd}`\n"
         if CMD_HELP_BOT[cmd]["info"]["info"] == "":
-            if not CMD_HELP_BOT[cmd]["info"]["warning"] == "":
+            if CMD_HELP_BOT[cmd]["info"]["warning"] != "":
                 result += f"**⚠️ Warning :**  {CMD_HELP_BOT[cmd]['info']['warning']}\n\n"
         else:
-            if not CMD_HELP_BOT[cmd]["info"]["warning"] == "":
+            if CMD_HELP_BOT[cmd]["info"]["warning"] != "":
                 result += f"**⚠️ Warning :**  {CMD_HELP_BOT[cmd]['info']['warning']}\n"
             result += f"**ℹ️ Info :**  {CMD_HELP_BOT[cmd]['info']['info']}\n\n"
         command = CMD_HELP_BOT[cmd]["commands"][commands]
