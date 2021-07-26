@@ -75,11 +75,9 @@ async def slap(replied_user, event):
     hit = random.choice(HIT)
     throw = random.choice(THROW)
 
-    caption = temp.format(
+    return temp.format(
         user1=Eiva_mention, user2=slapped, item=item, hits=hit, throws=throw
     )
-
-    return caption
 
 @bot.on(Eiva_cmd(pattern=f"randi$", outgoing=True))
 @bot.on(sudo_cmd(pattern=f"randi$", allow_sudo=True))
@@ -178,35 +176,34 @@ async def cry(e):
 @bot.on(Eiva_cmd(pattern="cp(?: |$)(.*)", outgoing=True))
 @bot.on(sudo_cmd(pattern="cp(?:|$)(.*)", allow_sudo=True))
 async def copypasta(cp_e):
-    if not cp_e.text[0].isalpha() and cp_e.text[0] not in ("/", "#", "@", "!"):
-        textx = await cp_e.get_reply_message()
-        message = cp_e.pattern_match.group(1)
-        if message:
-            pass
-        elif textx:
-            message = textx.text
+    if cp_e.text[0].isalpha() or cp_e.text[0] in ("/", "#", "@", "!"):
+        return
+
+    textx = await cp_e.get_reply_message()
+    message = cp_e.pattern_match.group(1)
+    if message:
+        pass
+    elif textx:
+        message = textx.text
+    else:
+        await edit_or_reply(cp_e, "`😂🅱️IvE👐sOME👅text👅for✌️Me👌tO👐MAkE👀iT💞funNy!💦`")
+        return
+    reply_text = random.choice(EMOJIS)
+    b_char = random.choice(
+        message
+    ).lower()  # choose a random character in the message to be substituted with 🅱️
+    for owo in message:
+        if owo == " ":
+            reply_text += random.choice(EMOJIS)
+        elif owo in EMOJIS:
+            reply_text += owo
+            reply_text += random.choice(EMOJIS)
+        elif owo.lower() == b_char:
+            reply_text += "🅱️"
         else:
-            await edit_or_reply(cp_e, "`😂🅱️IvE👐sOME👅text👅for✌️Me👌tO👐MAkE👀iT💞funNy!💦`")
-            return
-        reply_text = random.choice(EMOJIS)
-        b_char = random.choice(
-            message
-        ).lower()  # choose a random character in the message to be substituted with 🅱️
-        for owo in message:
-            if owo == " ":
-                reply_text += random.choice(EMOJIS)
-            elif owo in EMOJIS:
-                reply_text += owo
-                reply_text += random.choice(EMOJIS)
-            elif owo.lower() == b_char:
-                reply_text += "🅱️"
-            else:
-                if bool(random.getrandbits(1)):
-                    reply_text += owo.upper()
-                else:
-                    reply_text += owo.lower()
-        reply_text += random.choice(EMOJIS)
-        await edit_or_reply(cp_e, reply_text)
+            reply_text += owo.upper() if bool(random.getrandbits(1)) else owo.lower()
+    reply_text += random.choice(EMOJIS)
+    await edit_or_reply(cp_e, reply_text)
 
 @bot.on(Eiva_cmd(pattern="owo(?: |$)(.*)", outgoing=True))
 @bot.on(sudo_cmd(pattern="owo(?: |$)(.*)", allow_sudo=True))

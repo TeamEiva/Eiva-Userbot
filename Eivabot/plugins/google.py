@@ -107,9 +107,7 @@ async def google(event):
         des = got["descriptions"][i]
         output += f" 👉🏻  [{text}]({url})\n`{des}`\n\n"
     res = f"**Google Search Query:**\n`{input_str}`\n\n**Results:**\n{output}"
-    see = []
-    for i in range(0, len(res), 4095):
-        see.append(res[i : i + 4095])
+    see = [res[i : i + 4095] for i in range(0, len(res), 4095)]
     for j in see:
         await bot.send_message(event.chat_id, j, link_preview=False)
     await Eiva.delete()
@@ -151,12 +149,12 @@ async def _(event):
     if event.fwd_from:
         return
     start = datetime.datetime.now()
-    BASE_URL = "http://www.google.com"
     OUTPUT_STR = "Reply to an image to do Google Reverse Search"
     if event.reply_to_msg_id:
         Eiva = await eor(event, "Pre Processing Media")
         previous_message = await event.get_reply_message()
         previous_message_text = previous_message.message
+        BASE_URL = "http://www.google.com"
         if previous_message.media:
             downloaded_file_name = await bot.download_media(
                 previous_message, Config.TMP_DOWNLOAD_DIRECTORY

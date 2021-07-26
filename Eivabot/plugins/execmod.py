@@ -33,9 +33,8 @@ async def pipcheck(pip):
         if pipout:
             if len(pipout) > 4096:
                 await pip.edit("`Output too large, sending as file`")
-                file = open("pips.txt", "w+")
-                file.write(pipout)
-                file.close()
+                with open("pips.txt", "w+") as file:
+                    file.write(pipout)
                 await pip.client.send_file(
                     pip.chat_id,
                     "pips.txt",

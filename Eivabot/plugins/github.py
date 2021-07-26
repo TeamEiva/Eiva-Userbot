@@ -60,9 +60,8 @@ async def git_commit(file_name, Eivabot):
         create_file = True
         if i == 'ContentFile(path="' + file_name + '")':
             return await Eivabot.edit("`File Already Exists`")
-            create_file = False
     file_name = "Eivabot/plugins/" + file_name
-    if create_file == True:
+    if create_file:
         file_name = file_name.replace("./userbot/temp/", "")
         print(file_name)
         try:
