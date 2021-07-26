@@ -54,7 +54,7 @@ async def on_pm_click(event):
 
 @bot.on(events.ChatAction())
 async def forcesub(event):
-    if all_fsub() == None:
+    if all_fsub() is None:
         return
     if not (event.user_joined or event.user_added):
         return

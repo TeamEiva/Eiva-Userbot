@@ -109,22 +109,22 @@ async def already(event):
 
 @bot.on(events.ChatAction)
 async def _(event):
-    if event.user_joined or event.added_by:
-        user = await event.get_user()
-        chat = await event.get_chat()
-        if is_gbanned(str(user.id)):
-            if chat.admin_rights:
-                try:
-                    await event.client.edit_permissions(
-                        chat.id,
-                        user.id,
-                        view_messages=False,
-                    )
-                    gban_watcher = f"⚠️⚠️**Warning**⚠️⚠️\n\n`Gbanned User Joined the chat!!`\n**⚜️ Victim Id :**  [{user.first_name}](tg://user?id={user.id})\n"
-                    gban_watcher += f"**🔥 Action 🔥**  \n`Banned this piece of shit....` **AGAIN!**"
-                    await event.reply(gban_watcher)
-                except BaseException:
-                    pass
+    if not event.user_joined and not event.added_by:
+        return
+    user = await event.get_user()
+    chat = await event.get_chat()
+    if is_gbanned(str(user.id)) and chat.admin_rights:
+        try:
+            await event.client.edit_permissions(
+                chat.id,
+                user.id,
+                view_messages=False,
+            )
+            gban_watcher = f"⚠️⚠️**Warning**⚠️⚠️\n\n`Gbanned User Joined the chat!!`\n**⚜️ Victim Id :**  [{user.first_name}](tg://user?id={user.id})\n"
+            gban_watcher += f"**🔥 Action 🔥**  \n`Banned this piece of shit....` **AGAIN!**"
+            await event.reply(gban_watcher)
+        except BaseException:
+            pass
 
 
 @bot.on(Eiva_cmd(pattern=r"gkick ?(.*)"))
@@ -174,7 +174,7 @@ async def gm(event):
         userid = event.pattern_match.group(1)
     elif reply is not None:
         userid = reply.sender_id
-    elif private is True:
+    elif private:
         userid = event.chat_id
     else:
         return await eod(event, "Need a user to gmute. Reply or give userid to gmute them..")
@@ -211,7 +211,7 @@ async def endgmute(event):
         userid = event.pattern_match.group(1)
     elif reply is not None:
         userid = reply.sender_id
-    elif private is True:
+    elif private:
         userid = event.chat_id
     else:
         return await eod(event,"Please reply to a user or add their into the command to ungmute them.")

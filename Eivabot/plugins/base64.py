@@ -13,9 +13,8 @@ async def gethash(hash_q):
         return
     event = await eor(hash_q, "Processing...")
     hashtxt_ = hash_q.pattern_match.group(1)
-    hashtxt = open("hashdis.txt", "w+")
-    hashtxt.write(hashtxt_)
-    hashtxt.close()
+    with open("hashdis.txt", "w+") as hashtxt:
+        hashtxt.write(hashtxt_)
     md5 = runapp(["md5sum", "hashdis.txt"], stdout=PIPE)
     md5 = md5.stdout.decode()
     sha1 = runapp(["sha1sum", "hashdis.txt"], stdout=PIPE)
@@ -39,9 +38,8 @@ async def gethash(hash_q):
         + "`"
     )
     if len(ans) > 4096:
-        hashfile = open("hashes.txt", "w+")
-        hashfile.write(ans)
-        hashfile.close()
+        with open("hashes.txt", "w+") as hashfile:
+            hashfile.write(ans)
         await hash_q.client.send_file(
             hash_q.chat_id,
             "hashes.txt",

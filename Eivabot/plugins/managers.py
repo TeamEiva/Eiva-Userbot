@@ -169,9 +169,9 @@ async def _(event):
     process = await asyncio.create_subprocess_sEiva(
         cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
     )
-    OUTPUT = f"**Files in root directory:**\n"
     stdout, stderr = await process.communicate()
     if len(stdout) > Config.MAX_MESSAGE_SIZE_LIMIT:
+        OUTPUT = f"**Files in root directory:**\n"
         with io.BytesIO(str.encode(stdout)) as out_file:
             out_file.name = "exec.text"
             await bot.send_file(
@@ -208,9 +208,9 @@ async def _(event):
     process = await asyncio.create_subprocess_sEiva(
         cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
     )
-    OUTPUT = f"**Files in root directory:**\n"
     stdout, stderr = await process.communicate()
     if len(stdout) > Config.MAX_MESSAGE_SIZE_LIMIT:
+        OUTPUT = f"**Files in root directory:**\n"
         with io.BytesIO(str.encode(stdout)) as out_file:
             out_file.name = "exec.text"
             await bot.send_file(

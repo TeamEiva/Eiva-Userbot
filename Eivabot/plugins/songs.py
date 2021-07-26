@@ -42,9 +42,10 @@ async def nope(kraken):
     await troll[0].click(
         kraken.chat_id,
         reply_to=kraken.reply_to_msg_id,
-        silent=True if kraken.is_reply else False,
+        silent=bool(kraken.is_reply),
         hide_via=True,
     )
+
 
     await kraken.delete()
     
@@ -56,10 +57,7 @@ async def download_video(v_url):
     sender = await lazy.get_sender()
     me = await lazy.client.get_me()
 
-    if not sender.id == me.id:
-        rkp = await eor(lazy, "`Wait. Processing your request....`")
-    else:
-        rkp = await eor(lazy, "`Wait. Processing your request....`")
+    rkp = await eor(lazy, "`Wait. Processing your request....`")
     url = v_url.pattern_match.group(1)
     if not url:
         return await eod(rkp, f"**Error** \n__Usage:__ `{hl}song <song name>`")
@@ -177,10 +175,7 @@ async def download_video(v_url):
     lazy = v_url
     sender = await lazy.get_sender()
     me = await lazy.client.get_me()
-    if not sender.id == me.id:
-        rkp = await eor(lazy, "Processing video song request....")
-    else:
-        rkp = await eor(lazy, "Processing video song request....")
+    rkp = await eor(lazy, "Processing video song request....")
     url = v_url.pattern_match.group(1)
     if not url:
         return await eod(rkp, f"**Error** \n__Usage:__ `{hl}vsong <song name>`")

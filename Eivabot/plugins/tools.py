@@ -48,15 +48,14 @@ async def _(event):
             await eod(Eivaevent,
                 "Can you kindly disable your forward privacy settings for good?"
             )
+        elif response.text.startswith("Select"):
+            await eod(Eivaevent,
+                "`Please go to` @DrWebBot `and select your language.`"
+            )
         else:
-            if response.text.startswith("Select"):
-                await eod(Eivaevent,
-                    "`Please go to` @DrWebBot `and select your language.`"
-                )
-            else:
-                await Eivaevent.edit(
-                    f"**Antivirus scan was completed. I got the final results.**\n\n {response.message.message}"
-                )
+            await Eivaevent.edit(
+                f"**Antivirus scan was completed. I got the final results.**\n\n {response.message.message}"
+            )
 
 
 @bot.on(Eiva_cmd(pattern=r"decode$", outgoing=True))
@@ -119,9 +118,7 @@ async def _(event):
             m_list = None
             with open(downloaded_file_name, "rb") as fd:
                 m_list = fd.readlines()
-            message = ""
-            for m in m_list:
-                message += m.decode("UTF-8") + "\r\n"
+            message = "".join(m.decode("UTF-8") + "\r\n" for m in m_list)
             os.remove(downloaded_file_name)
         else:
             message = previous_message.message
@@ -164,9 +161,7 @@ async def make_qr(makeqr):
             m_list = None
             with open(downloaded_file_name, "rb") as file:
                 m_list = file.readlines()
-            message = ""
-            for media in m_list:
-                message += media.decode("UTF-8") + "\r\n"
+            message = "".join(media.decode("UTF-8") + "\r\n" for media in m_list)
             os.remove(downloaded_file_name)
         else:
             message = previous_message.message
@@ -263,9 +258,11 @@ async def currencylist(ups):
     request_url = "https://api.exchangeratesapi.io/latest?base=USD"
     current_response = requests.get(request_url).json()
     dil_wale_puch_de_na_chaaa = current_response["rates"]
-    hmm = ""
-    for key, value in dil_wale_puch_de_na_chaaa.items():
-        hmm += f"`{key}`" + "\t\t\t"
+    hmm = "".join(
+        f"`{key}`" + "\t\t\t"
+        for key, value in dil_wale_puch_de_na_chaaa.items()
+    )
+
     await eor(ups, f"**List of some currencies:**\n{hmm}\n")
 
 

@@ -47,10 +47,9 @@ async def take_screen_shot(video_file, output_directory, ttl):
     t_response = stdout.decode().strip()
     if os.path.lexists(out_put_file_name):
         return out_put_file_name
-    else:
-        logger.info(e_response)
-        logger.info(t_response)
-        return None
+    logger.info(e_response)
+    logger.info(t_response)
+    return None
 
 # trim vids
 async def cult_small_video(video_file, output_directory, start_time, end_time):
@@ -82,10 +81,9 @@ async def cult_small_video(video_file, output_directory, start_time, end_time):
     t_response = stdout.decode().strip()
     if os.path.lexists(out_put_file_name):
         return out_put_file_name
-    else:
-        logger.info(e_response)
-        logger.info(t_response)
-        return None
+    logger.info(e_response)
+    logger.info(t_response)
+    return None
 
 #####################################
 # for animated sticker to gif.....

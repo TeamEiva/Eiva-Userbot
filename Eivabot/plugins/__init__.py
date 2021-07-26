@@ -21,24 +21,12 @@ Eiva_ver = __Eiva__
 tel_ver = version.__version__
 
 async def get_user_id(ids):
-    if str(ids).isdigit():
-        userid = int(ids)
-    else:
-        userid = (await bot.get_entity(ids)).id
-    return userid
+    return int(ids) if str(ids).isdigit() else (await bot.get_entity(ids)).id
 
 sudos = Config.SUDO_USERS
-if sudos:
-    is_sudo = "True"
-else:
-    is_sudo = "False"
-
+is_sudo = "True" if sudos else "False"
 abus = Config.ABUSE
-if abus == "ON":
-    abuse_m = "Enabled"
-else:
-    abuse_m ="Disabled"
-
+abuse_m = "Enabled" if abus == "ON" else "Disabled"
 START_TIME = datetime.datetime.now()
 uptime = f"{str(datetime.datetime.now() - START_TIME).split('.')[0]}"
 my_channel = Config.MY_CHANNEL or "TheEiva"

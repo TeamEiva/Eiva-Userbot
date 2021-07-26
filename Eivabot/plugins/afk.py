@@ -204,18 +204,15 @@ async def _(event):
     USER_night = {}
     night_time = None
     last_night_message = {}
-    reason = event.pattern_match.group(1)
     if not USER_night:
+        reason = event.pattern_match.group(1)
         last_seen_status = await bot(
             functions.account.GetPrivacyRequest(types.InputPrivacyKeyStatusTimestamp())
         )
         if isinstance(last_seen_status.rules, types.PrivacyValueAllowAll):
             night_time = datetime.datetime.now()
         USER_night = f"yes: {reason}"
-        if reason:
-            await event.edit(f"**Bye Fellas!!** \n\nTime to sleep 😴")
-        else:
-            await event.edit(f"**Bye Fellas!!** \n\nTime to sleep 😴")
+        await event.edit(f"**Bye Fellas!!** \n\nTime to sleep 😴")
         await asyncio.sleep(5)
         await event.delete()
         try:
@@ -249,7 +246,7 @@ async def on_night(event):
             datime_since_night = now - night_time
             time = float(datime_since_night.seconds)
             days = time // (24 * 3600)
-            time = time % (24 * 3600)
+            time %= 24 * 3600
             hours = time // 3600
             time %= 3600
             minutes = time // 60

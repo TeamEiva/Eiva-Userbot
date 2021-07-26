@@ -83,12 +83,10 @@ async def variable(Eiva):
                 if Config.ABUSE == "ON":
                     await bot.send_file(Eiva.chat_id, cjb, caption=cap)
                     await event.delete()
-                    await bot.send_message(lg_id, f"#HEROKU_VAR \n\n`{heroku_var[variable]}`")
-                    return
                 else:
                     await event.edit(f"**{capn}**")
-                    await bot.send_message(lg_id, f"#HEROKU_VAR \n\n`{heroku_var[variable]}`")
-                    return
+                await bot.send_message(lg_id, f"#HEROKU_VAR \n\n`{heroku_var[variable]}`")
+                return
             if variable in heroku_var:
                 return await event.edit(
                     "**Heroku Var** :" f"\n\n`{variable}` = `{heroku_var[variable]}`\n"
@@ -148,11 +146,11 @@ async def variable(Eiva):
         except IndexError:
             return await event.edit("`Please specify ConfigVars you want to delete`")
         await asyncio.sleep(1.5)
-        if variable in heroku_var:
-            await event.edit(f"**Successfully Deleted** \n`{variable}`")
-            del heroku_var[variable]
-        else:
+        if variable not in heroku_var:
             return await event.edit(f"`{variable}`  **does not exists**")
+
+        await event.edit(f"**Successfully Deleted** \n`{variable}`")
+        del heroku_var[variable]
 
 
 @bot.on(Eiva_cmd(pattern="usage(?: |$)", outgoing=True))
