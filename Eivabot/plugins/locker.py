@@ -65,11 +65,9 @@ async def locks(event):
     else:
         if not input_str:
             await eod(event, "`Need something to lock sur!!`🚶")
-            return
         else:
             await eod(event, f"🤐 `Invalid lock type:` {input_str}")
-            return
-
+        return
     lock_rights = ChatBannedRights(
         until_date=None,
         send_messages=msg,
@@ -159,11 +157,9 @@ async def rem_locks(event):
     else:
         if not input_str:
             await eod(event, "`I need something to unlock sur!!`🚶")
-            return
         else:
             await eod(event, f"🤐 `Invalid unlock type:` {input_str}")
-            return
-
+        return
     unlock_rights = ChatBannedRights(
         until_date=None,
         send_messages=msg,

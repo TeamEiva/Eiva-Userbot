@@ -264,7 +264,6 @@ async def kang(args):
 async def resize_photo(photo):
     """ Resize the given photo to 512x512 """
     image = Image.open(photo)
-    maxsize = (512, 512)
     if (image.width and image.height) < 512:
         size1 = image.width
         size2 = image.height
@@ -281,6 +280,7 @@ async def resize_photo(photo):
         sizenew = (size1new, size2new)
         image = image.resize(sizenew)
     else:
+        maxsize = (512, 512)
         image.thumbnail(maxsize)
 
     return image
@@ -385,7 +385,6 @@ async def _(event):
         return
     reply_message = await event.get_reply_message()
     Eiva = event.pattern_match.group(1)
-    chat = "@Stickers"
     reply_message.sender
     if reply_message.sender.bot:
         await edit_or_reply(event, "`Reply to actual user's message.`")
@@ -394,6 +393,7 @@ async def _(event):
     if Eiva == "":
         await event.edit("**🤧 Nashe me hai kya lawde**")
     else:
+        chat = "@Stickers"
         async with bot.conversation(chat) as conv:
             try:
                 response = conv.wait_event(
@@ -494,9 +494,10 @@ async def waifu(animu):
     await sticcers[0].click(
         animu.chat_id,
         reply_to=animu.reply_to_msg_id,
-        silent=True if animu.is_reply else False,
+        silent=bool(animu.is_reply),
         hide_via=True,
     )
+
     await animu.delete()
 
 

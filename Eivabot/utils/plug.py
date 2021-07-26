@@ -26,9 +26,8 @@ from Eivabot.utils import *
 ENV = bool(os.environ.get("ENV", False))
 if ENV:
     from Eivabot.config import Config
-else:
-    if os.path.exists("Config.py"):
-        from Config import Development as Config
+elif os.path.exists("Config.py"):
+    from Config import Development as Config
 
 
 # load plugins

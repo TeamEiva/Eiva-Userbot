@@ -18,10 +18,7 @@ GMute.__table__.create(checkfirst=True)
 
 def is_gmuted(sender, chat_id):
     user = SESSION.query(GMute).get((str(sender), str(chat_id)))
-    if user:
-        return True
-    else:
-        return False
+    return bool(user)
 
 
 def gmute(sender, chat_id):

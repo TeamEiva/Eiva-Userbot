@@ -42,7 +42,6 @@ async def formatJSON(outData):
     res = list(jsonData.keys())
     if "errors" in res:
         msg += f"**Error** : `{jsonData['errors'][0]['message']}`"
-        return msg
     else:
         jsonData = jsonData["data"]["Media"]
         if "bannerImage" in jsonData.keys():
@@ -64,7 +63,8 @@ async def formatJSON(outData):
         # https://t.me/catuserbot_support/19496
         cat = f"{jsonData['description']}"
         msg += " __" + re.sub("<br>", "\n", cat) + "__"
-        return msg
+
+    return msg
 
 
 @bot.on(Eiva_cmd(pattern="anilist (.*)"))
@@ -96,9 +96,10 @@ async def nope(hel_):
     await troll[0].click(
         hel_.chat_id,
         reply_to=hel_.reply_to_msg_id,
-        silent=True if hel_.is_reply else False,
+        silent=bool(hel_.is_reply),
         hide_via=True,
     )
+
     await hel_.delete()
     
     
@@ -119,9 +120,10 @@ async def nope(hel_):
     await troll[0].click(
         hel_.chat_id,
         reply_to=hel_.reply_to_msg_id,
-        silent=True if hel_.is_reply else False,
+        silent=bool(hel_.is_reply),
         hide_via=True,
     )
+
     await hel_.delete()
     
 
@@ -142,9 +144,10 @@ async def nope(hel_):
     await troll[0].click(
         hel_.chat_id,
         reply_to=hel_.reply_to_msg_id,
-        silent=True if hel_.is_reply else False,
+        silent=bool(hel_.is_reply),
         hide_via=True,
     )
+
     await hel_.delete()
 
 

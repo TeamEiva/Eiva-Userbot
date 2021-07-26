@@ -35,10 +35,6 @@ def is_admin():
             ForGo10 = bot.uid
             if perms.is_admin:
                 await func(event)
-            if event.sender_id == ForGo10:
-                pass
-            elif not user:
-                pass
             if not perms.is_admin:
                 await event.reply("Only Admins Can Use This..")
 
@@ -87,8 +83,6 @@ def owner_only():
             watashi = bot.uid
             if event.sender_id == watashi:
                 await func(event)
-            else:
-                pass
 
         return wrapper
 
@@ -115,8 +109,6 @@ def only_group():
         async def wrapper(event):
             if event.is_group:
                 await func(event)
-            else:
-                pass
 
         return wrapper
 
@@ -131,8 +123,6 @@ def allowed_only():
             minna.append(bot.uid)
             if event.sender_id in minna:
                 await func(event)
-            else:
-                pass
 
         return wrapper
 
@@ -143,9 +133,7 @@ def privates():
     def decorator(func):
         @functools.wraps(func)
         async def wrapper(event):
-            if event.is_group:
-                pass
-            else:
+            if not event.is_group:
                 await func(event)
 
         return wrapper

@@ -49,8 +49,7 @@ async def get_chatinfo(event):
 def user_full_name(user):
     names = [user.first_name, user.last_name]
     names = [i for i in list(names) if i]
-    full_name = " ".join(names)
-    return full_name
+    return " ".join(names)
 
 
 @bot.on(Eiva_cmd(pattern=r"inviteall ?(.*)"))
@@ -58,16 +57,9 @@ def user_full_name(user):
 async def get_users(event):
     sender = await event.get_sender()
     me = await event.client.get_me()
-    if not sender.id == me.id:
-        Eiva = await eor(event, "`processing...`")
-    else:
-        Eiva = await eor(event, "`processing...`")
+    Eiva = await eor(event, "`processing...`")
     he_ll = event.pattern_match.group(1)
     if he_ll == "@EivaSupport":
-        return await Eiva.edit("Restricted to invite users from there.")
-    elif he_ll == "@EivaSupport":
-        return await Eiva.edit("Restricted to invite users from there.")
-    elif he_ll == "@EivaSupport":
         return await Eiva.edit("Restricted to invite users from there.")
     kraken = await get_chatinfo(event)
     chat = await event.get_chat()
@@ -87,13 +79,13 @@ async def get_users(event):
             await event.client(
                 functions.channels.InviteToChannelRequest(channel=chat, users=[user.id])
             )
-            s = s + 1
+            s += 1
             await Eiva.edit(
                 f"**INVITING USERS.. **\n\n**Invited :**  `{s}` users \n**Failed to Invite :**  `{f}` users.\n\n**×Error :**  `{error}`"
             )
         except Exception as e:
             error = str(e)
-            f = f + 1
+            f += 1
     return await Eiva.edit(
         f"**INVITING FINISHED** \n\n**Invited :**  `{s}` users \n**Failed :**  `{f}` users."
     )

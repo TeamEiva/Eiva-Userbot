@@ -17,24 +17,23 @@ async def reply_id(event):
 
 def media_type(message):
     if message and message.photo:
-        media = "Photo"
+        return "Photo"
     elif message and message.audio:
-        media = "Audio"
+        return "Audio"
     elif message and message.voice:
-        media = "Voice"
+        return "Voice"
     elif message and message.video_note:
-        media = "Round Video"
+        return "Round Video"
     elif message and message.gif:
-        media = "Gif"
+        return "Gif"
     elif message and message.sticker:
-        media = "Sticker"
+        return "Sticker"
     elif message and message.video:
-        media = "Video"
+        return "Video"
     elif message and message.document:
-        media = "Document"
+        return "Document"
     else:
-        media = None
-    return media
+        return None
     
 
 @bot.on(Eiva_cmd(pattern="tsave$"))

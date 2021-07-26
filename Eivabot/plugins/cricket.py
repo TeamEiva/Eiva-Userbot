@@ -12,9 +12,7 @@ async def _(event):
     page = urllib.request.urlopen(score_page)
     soup = BeautifulSoup(page, "html.parser")
     result = soup.find_all("description")
-    Sed = ""
-    for match in result:
-        Sed += match.get_text() + "\n\n"
+    Sed = "".join(match.get_text() + "\n\n" for match in result)
     await event.edit(
         f"<b><u>Match information gathered successful</b></u>\n\n\n<code>{Sed}</code>",
         parse_mode="HTML",
