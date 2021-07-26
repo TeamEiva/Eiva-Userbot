@@ -49,7 +49,7 @@ async def gen_chlog(repo, diff):
 
 async def print_changelogs(event, ac_br, changelog):
     changelog_str = (
-        f"🔥 **New UPDATE available for [{ac_br}]:\n\n📑 CHANGELOG:**\n`{changelog}`"
+        f"🔥 **New Update available for [{ac_br}]:\n\n📑 CHANGELOG:**\n`{changelog}`"
     )
     if len(changelog_str) > 4096:
         await event.edit("`Changelog is too big, view the file to see it.`")
@@ -92,7 +92,7 @@ async def update(event, repo, ups_rem, ac_br):
         repo.git.reset("--hard", "FETCH_HEAD")
     await update_requirements()
     await event.edit(
-        "✅ Successfully updated !єιναϐοτ\n\nBot is restarting please wait for a minute."
+        "✅ Successfully updated !𝗘𝗜𝗩𝗔𝗕𝗢𝗧\n\nBot is restarting please wait for a minute."
     )
     args = [sys.executable, "-m", "Eivabot"]
     os.execle(sys.executable, *args, os.environ)
@@ -150,20 +150,20 @@ async def upstream(event):
     changelog = await gen_chlog(repo, f"HEAD..upstream/{ac_br}")
     if changelog == "" and not force_update:
         await event.edit(
-            "\n**😎 єιναϐοτ is UP-TO-DATE.**"
-            f"\n\n**Version :**  {Eiva_ver}"
-            f"\n**Owner :**  {Eiva_mention}"
-            f"\n**Git Branch :**  {UPSTREAM_REPO_BRANCH}\n"
+            "\n**😎 𝗘𝗜𝗩𝗔𝗕𝗢𝗧  𝗜𝗦  𝗨𝗣-𝗧𝗢-𝗗𝗔𝗧𝗘.**"
+            f"\n\n**𝗩𝗘𝗥𝗦𝗜𝗢𝗡 :**  {Eiva_ver}"
+            f"\n**𝗢𝗪𝗡𝗘𝗥 :**  {Eiva_mention}"
+            f"\n**𝗚𝗜𝗧 𝗕𝗥𝗔𝗡𝗖𝗛 :**  {UPSTREAM_REPO_BRANCH}\n"
         )
         return repo.__del__()
     if conf == "" and not force_update:
         await print_changelogs(event, ac_br, changelog)
         await event.delete()
-        return await event.respond(f"🌚 Do `{hl}update build` to update your **єιναϐοτ** !!")
+        return await event.respond(f"🌚 Do `{hl}update build` to update your **𝗘𝗜𝗩𝗔𝗕𝗢𝗧 ** !!")
 
     if force_update:
         await event.edit(
-            "`Force-Updating єιναϐοτ. Please wait...`"
+            "`Force-Updating 𝗘𝗜𝗩𝗔𝗕𝗢𝗧 . Please wait...`"
         )
     if conf == "now":
         await event.edit("`Update In Progress! Please Wait....`")
@@ -216,7 +216,7 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
             )
             await asyncio.sleep(5)
             return await event.delete()
-        await event.edit(f"**Your єιναϐοτ Is UpToDate**\n\n**Version :**  __{Eiva_ver}__\n**Oɯɳҽɾ :**  {Eiva_mention}")
+        await event.edit(f"**Your 𝗘𝗜𝗩𝗔𝗕𝗢𝗧  𝗜𝗦  𝗨𝗣-𝗧𝗢-𝗗𝗔𝗧𝗘**\n\n**Version :**  __{Eiva_ver}__\n**Oɯɳҽɾ :**  {Eiva_mention}")
     else:
         await event.edit("**Please set up**  `HEROKU_API_KEY`  **from heroku to update!**")
     return
@@ -256,18 +256,18 @@ async def upstream(event):
     ac_br = repo.active_branch.name
     ups_rem = repo.remote("upstream")
     ups_rem.fetch(ac_br)
-    await event.edit(f"**єιναϐοτ Docker Build In Progress... Type** `{hl}ping`  **after 5 mins to check if Bot is working!**")
+    await event.edit(f"**𝗘𝗜𝗩𝗔𝗕𝗢𝗧 𝗗𝗢𝗖𝗞𝗘𝗥 𝗕𝗨𝗜𝗟𝗗 𝗜𝗡 𝗣𝗥𝗢𝗚𝗥𝗘𝗦𝗦... Type** `{hl}ping`  **after 5 mins to check if Bot is working!**")
     await deploy(event, repo, ups_rem, ac_br, txt)
 
 
 CmdHelp("update").add_command(
   "update", None, "Checks if any new update is available."
 ).add_command(
-  "update now", None, "Soft-Update Your єιναϐοτ. Basically if you restart dyno it will go back to previous deploy."
+  "update now", None, "Soft-Update Your 𝗘𝗜𝗩𝗔𝗕𝗢𝗧 . Basically if you restart dyno it will go back to previous deploy."
 ).add_command(
-  "update build", None, "Hard-Update Your єιναϐοτ. This won't take you back to your previous deploy. This will be triggered even if there is no changelog."
+  "update build", None, "Hard-Update Your 𝗘𝗜𝗩𝗔𝗕𝗢𝗧 . This won't take you back to your previous deploy. This will be triggered even if there is no changelog."
 ).add_info(
-  "єιναϐοτ Updater."
+  "𝗘𝗜𝗩𝗔𝗕𝗢𝗧  Updater."
 ).add_warning(
   "✅ Harmless Module."
 ).add()
