@@ -31,7 +31,7 @@ async def bigspam(Eiva):
         Eiva_msg = Eiva.text
         Eivabot_count = int(Eiva_msg[9:13])
         Eiva_spam = str(Eiva.text[13:])
-        for i in range(1, Eivabot_count):
+        for _ in range(1, Eivabot_count):
             await Eiva.respond(Eiva_spam)
         await Eiva.delete()
         await Eiva.client.send_message(
@@ -70,11 +70,10 @@ async def tiny_pic_spam(e):
             not reply_message
             or not e.reply_to_msg_id
             or not reply_message.media
-            or not reply_message.media
         ):
             return await e.edit("```Reply to a pic/sticker/gif/video message```")
         message = reply_message.media
-        for i in range(1, counter):
+        for _ in range(1, counter):
             await e.client.send_file(e.chat_id, message)
     except:
         return await e.reply(

@@ -18,7 +18,7 @@ async def _(event):
         return
     input_str = event.pattern_match.group(1)
     shiiinabot = "\u2060"
-    for i in range(601):
+    for _ in range(601):
         shiiinabot += "\u2060"
     try:
         await eor(event, shiiinabot)
@@ -50,7 +50,7 @@ async def _(event):
     if event.fwd_from:
         return
     animation_interval = 0.3
-    animation_ttl = range(0, 16)
+    animation_ttl = range(16)
     input_str = event.pattern_match.group(1)
     if input_str == "shrug":
         await eor(event, "¯\_(ツ)_/¯")

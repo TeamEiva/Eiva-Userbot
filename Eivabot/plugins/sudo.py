@@ -35,17 +35,13 @@ async def add(event):
         target = await get_user(event)
     except Exception:
         await eod(ok, f"Reply to a user to add them in sudo.")
-    if sudousers:
-        newsudo = f"{sudousers} {target}"
-    else:
-        newsudo = f"{target}"
+    newsudo = f"{sudousers} {target}" if sudousers else f"{target}"
     await ok.edit(f"✅** Added**  `{target}`  **in Sudo User.**\n\n __Restarting Heroku to Apply Changes. Wait for a minute.__")
     heroku_Config[bot] = newsudo
 
 @bot.on(Eiva_cmd(pattern="rmsudo(?: |$)"))
 async def _(event):
     ok = await eor(event, "**🚫 Removing Sudo User...**")
-    bot = "SUDO_USERS"
     if Config.HEROKU_APP_NAME is not None:
         app = Heroku.app(Config.HEROKU_APP_NAME)
     else:
@@ -62,6 +58,7 @@ async def _(event):
     if gett in sudousers:
         newsudo = sudousers.replace(gett, "")
         await ok.edit(f"❌** Removed**  `{target}`  from Sudo User.\n\n Restarting Heroku to Apply Changes. Wait for a minute.")
+        bot = "SUDO_USERS"
         heroku_Config[bot] = newsudo
     else:
         await ok.edit("**😑This user is not in your Sudo Users List.**")
@@ -77,8 +74,7 @@ async def get_user(event):
             replied_user = await event.client(
                 GetFullUserRequest(previous_message.sender_id)
             )
-    target = replied_user.user.id
-    return target
+    return replied_user.user.id
 
 
 CmdHelp("sudo").add_command(

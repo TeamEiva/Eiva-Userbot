@@ -59,12 +59,11 @@ async def set_no_log_p_m(event):
     if Config.PM_LOG_ID is not None:
         event.pattern_match.group(1)
         chat = await event.get_chat()
-        if event.is_private:
-            if chat.id in NO_PM_LOG_USERS:
-                NO_PM_LOG_USERS.remove(chat.id)
-                await event.edit("Will Log Messages from this chat")
-                await asyncio.sleep(3)
-                await event.delete()
+        if event.is_private and chat.id in NO_PM_LOG_USERS:
+            NO_PM_LOG_USERS.remove(chat.id)
+            await event.edit("Will Log Messages from this chat")
+            await asyncio.sleep(3)
+            await event.delete()
 
 
 @bot.on(Eiva_cmd(pattern="nlog ?(.*)"))
@@ -72,12 +71,11 @@ async def set_no_log_p_m(event):
     if Config.PM_LOG_ID is not None:
         event.pattern_match.group(1)
         chat = await event.get_chat()
-        if event.is_private:
-            if chat.id not in NO_PM_LOG_USERS:
-                NO_PM_LOG_USERS.append(chat.id)
-                await event.edit("Won't Log Messages from this chat")
-                await asyncio.sleep(3)
-                await event.delete()
+        if event.is_private and chat.id not in NO_PM_LOG_USERS:
+            NO_PM_LOG_USERS.append(chat.id)
+            await event.edit("Won't Log Messages from this chat")
+            await asyncio.sleep(3)
+            await event.delete()
 
 
 CmdHelp("pm_logger").add_command(

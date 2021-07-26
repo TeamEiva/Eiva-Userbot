@@ -19,7 +19,7 @@ class CmdHelp:
         self.FILE = file
         self.ORIGINAL_FILE = file
         self.IS_OFFICIAL = official
-        self.FILE_NAME = file_name if not file_name == None else file + ".py"
+        self.FILE_NAME = file_name if file_name is not None else file + ".py"
         self.COMMANDS = {}
         self.FILE_AUTHOR = ""
         self.WARNING = ""
@@ -60,21 +60,21 @@ class CmdHelp:
 
         result = f"**📗 File :**  `{self.FILE}`\n"
         if self.INFO == "":
-            if not self.WARNING == "":
+            if self.WARNING != "":
                 result += f"**⚠️ Warning :**  {self.WARNING}\n\n"
         else:
-            if not self.WARNING == "":
+            if self.WARNING != "":
                 result += f"**⚠️ Warning :**  {self.WARNING}\n"
             result += f"**ℹ️ Info :**  {self.INFO}\n\n"
 
         for command in self.COMMANDS:
             command = self.COMMANDS[command]
-            if command["params"] == None:
+            if command["params"] is None:
                 result += f"**🛠 Command :**  `{HANDLER[:1]}{command['command']}`\n"
             else:
                 result += f"**🛠 Command :**  `{HANDLER[:1]}{command['command']} {command['params']}`\n"
 
-            if command["example"] == None:
+            if command["example"] is None:
                 result += f"**💬 Details :**  `{command['usage']}`\n\n"
             else:
                 result += f"**💬 Details :**  `{command['usage']}`\n"

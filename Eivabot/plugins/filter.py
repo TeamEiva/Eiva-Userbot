@@ -19,11 +19,13 @@ last_triggered_filters = {}  # pylint:disable=E0602
 async def on_snip(event):
     global last_triggered_filters
     name = event.raw_text
-    if event.chat_id in last_triggered_filters:
-        if name in last_triggered_filters[event.chat_id]:
-            # avoid userbot spam
-            # "I demand rights for us bots, we are equal to you humans." -Henri Koivuneva (t.me/UserbotTesting/2698)
-            return False
+    if (
+        event.chat_id in last_triggered_filters
+        and name in last_triggered_filters[event.chat_id]
+    ):
+        # avoid userbot spam
+        # "I demand rights for us bots, we are equal to you humans." -Henri Koivuneva (t.me/UserbotTesting/2698)
+        return False
     snips = get_all_filters(event.chat_id)
     if snips:
         for snip in snips:

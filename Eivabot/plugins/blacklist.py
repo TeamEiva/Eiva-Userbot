@@ -54,10 +54,10 @@ async def on_delete_blacklist(event):
     )
 
     successful = sum(
-        1
+        bool(sq.rm_from_blacklist(event.chat_id, trigger.lower()))
         for trigger in to_unblacklist
-        if sq.rm_from_blacklist(event.chat_id, trigger.lower())
     )
+
 
     await edit_or_reply(
         event, f"Removed {successful} / {len(to_unblacklist)} from the blacklist"

@@ -73,9 +73,8 @@ if PM_ON_OFF != "DISABLE":
             return
         if str(event.chat_id) in DEVLIST:
             return
-        if not pm_sql.is_approved(event.chat_id):
-            if not event.chat_id in PM_WARNS:
-                pm_sql.approve(event.chat_id, "outgoing")
+        if not pm_sql.is_approved(event.chat_id) and event.chat_id not in PM_WARNS:
+            pm_sql.approve(event.chat_id, "outgoing")
                 
     @bot.on(Eiva_cmd(pattern="(a|approve|allow)$"))
     async def approve(event):

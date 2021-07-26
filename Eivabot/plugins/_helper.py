@@ -36,9 +36,8 @@ async def yardim(event):
     tgbotusername = Config.BOT_USERNAME
     input_str = event.pattern_match.group(1)
     try:
-        if not input_str == "":
-            if input_str in CMD_HELP:
-                await eor(event, str(CMD_HELP[args]))
+        if input_str != "" and input_str in CMD_HELP:
+            await eor(event, str(CMD_HELP[args]))
     except:
         pass
     if tgbotusername is not None:
@@ -73,10 +72,7 @@ async def Eivabott(event):
             string += f"`▶️ `"
             for sira, a in enumerate(i):
                 string += "`" + str(a)
-                if sira == i.index(i[-1]):
-                    string += "`"
-                else:
-                    string += "`, "
+                string += "`" if sira == i.index(i[-1]) else "`, "
             string += "\n"
         await eod(event, "Please Specify A Module Name Of Which You Want Info" + "\n\n" + string)
 
