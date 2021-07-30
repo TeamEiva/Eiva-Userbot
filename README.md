@@ -1,5 +1,5 @@
 <h1 align="center">
-  <b>ΣIVΛ-ЦSΣΓBθƬ</b> 
+  <b>єινα υsєявσт</b> 
 </h1> 
 
 <p align="center">
