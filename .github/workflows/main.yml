@@ -34,7 +34,7 @@ jobs:
 
           repository: .
 
-          commit_user_name: Error-Shivansh
+          commit_user_name: ErrorShivansh
 
           commit_user_email: shivanshraghuvanshi2005@gmail.com
 
