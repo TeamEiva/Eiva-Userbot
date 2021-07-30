@@ -1,5 +1,5 @@
 <h1 align="center">
-  <b>єινα υsєявσт</b> 
+  <b>𝙀𝙄𝙑𝘼 𝙐𝙎𝙀𝙍𝘽𝙊𝙏</b> 
 </h1> 
 
 <p align="center">
