@@ -1,10 +1,162 @@
+import asyncio
 from telethon import events
 from telethon.tl.functions.channels import EditAdminRequest
-from telethon.tl.types import ChatAdminRights
-import asyncio
+from telethon.tl.types import ChatAdminRights, ChannelParticipantsAdmins, ChatBannedRights, MessageEntityMentionName, MessageMediaPhoto
+from telethon.errors.rpcerrorlist import UserIdInvalidError, MessageTooLongError
+from telethon.tl.functions.channels import EditAdminRequest, EditBannedRequest, EditPhotoRequest
+from telethon.tl.functions.messages import UpdatePinnedMessageRequest
+
 from Eivabot.sql.gban_sql import is_gbanned, gbaner, ungbaner, all_gbanned
 from Eivabot.sql import gmute_sql as gsql
 from . import *
+
+
+async def get_full_user(event):  
+    args = event.pattern_match.group(1).split(':', 1)
+    extra = None
+    if event.reply_to_msg_id and not len(args) == 2:
+        previous_message = await event.get_reply_message()
+        user_obj = await event.client.get_entity(previous_message.sender_id)
+        extra = event.pattern_match.group(1)
+    elif len(args[0]) > 0:
+        user = args[0]
+        if len(args) == 2:
+            extra = args[1]
+        if user.isnumeric():
+            user = int(user)
+        if not user:
+            await eor(event, "Need a user to do this...")
+            return
+        if event.message.entities is not None:
+            probable_user_mention_entity = event.message.entities[0]
+            if isinstance(probable_user_mention_entity,
+                          MessageEntityMentionName):
+                user_id = probable_user_mention_entity.user_id
+                user_obj = await event.client.get_entity(user_id)
+                return user_obj
+        try:
+            user_obj = await event.client.get_entity(user)
+        except Exception as err:
+            return await eor(event, f"**ERROR !!**\n\n`{str(err)}`")           
+    return user_obj, extra
+
+
+async def get_user_from_id(user, event):
+    if isinstance(user, str):
+        user = int(user)
+    try:
+        user_obj = await event.client.get_entity(user)
+    except (TypeError, ValueError) as err:
+        await event.edit(str(err))
+        return None
+    return user_obj
+
+
+
+@bot.on(Eiva_cmd(pattern="gpro ?(.*)"))
+@bot.on(sudo_cmd(pattern="gpro ?(.*)", allow_sudo=True))
+async def _(Eivaevent):
+    i = 0
+    sender = await Eivaevent.get_sender()
+    me = await Eivaevent.client.get_me()
+    Eiva = await eor(Eivaevent, "`Promoting globally...`")
+    my_mention = "[{}](tg://user?id={})".format(me.first_name, me.id)
+    f"@{me.username}" if me.username else my_mention
+    await Eivaevent.get_chat()
+    if Eivaevent.is_private:
+        user = Eivaevent.chat
+        rank = Eivaevent.pattern_match.group(1)
+    else:
+        Eivaevent.chat.title
+    try:
+        user, rank = await get_full_user(Eivaevent)
+    except:
+        pass
+    if me == user:
+       k = await Eiva.edit("You can't promote yourself...")
+       return
+    try:
+        if not rank:
+            rank = "ㅤ"
+    except:
+        return await Eiva.edit("**ERROR !!**")
+    if user:
+        telchanel = [d.entity.id
+                     for d in await Eivaevent.client.get_dialogs()
+                     if (d.is_group or d.is_channel)
+                     ]
+        rgt = ChatAdminRights(add_admins=False,
+                               invite_users=True,
+                                change_info=False,
+                                 ban_users=True,
+                                  delete_messages=True,
+                                   pin_messages=True)
+        for x in telchanel:
+          try:
+             await Eivaevent.client(EditAdminRequest(x, user, rgt, rank))
+             i += 1
+             await Eiva.edit(f"**Promoting User in :**  `{i}` Chats...")
+          except:
+             pass
+    else:
+        await Eiva.edit(f"**Reply to a user !!**")
+    await Eiva.edit(
+        f"[{user.first_name}](tg://user?id={user.id}) **Was Promoted Globally In** `{i}` **Chats !!**"
+    )
+    await bot.send_message(Config.LOGGER_ID, f"#GPROMOTE \n\n**Globally Promoted User :** [{user.first_name}](tg://user?id={user.id}) \n\n**Total Chats :** `{i}`")
+
+
+@bot.on(Eiva_cmd(pattern="gdem ?(.*)"))
+@bot.on(sudo_cmd(pattern="gdem ?(.*)", allow_sudo=True))
+async def _(Eivaevent):
+    i = 0
+    sender = await Eivaevent.get_sender()
+    me = await Eivaevent.client.get_me()
+    Eiva = await eor(Eivaevent, "`Demoting Globally...`")
+    my_mention = "[{}](tg://user?id={})".format(me.first_name, me.id)
+    f"@{me.username}" if me.username else my_mention
+    await Eivaevent.get_chat()
+    if Eivaevent.is_private:
+        user = Eivaevent.chat
+        rank = Eivaevent.pattern_match.group(1)
+    else:
+        Eivaevent.chat.title
+    try:
+        user, rank = await get_full_user(Eivaevent)
+    except:
+        pass
+    if me == user:
+       k = await Eiva.edit("You can't Demote yourself !!")
+       return
+    try:
+        if not rank:
+            rank = "ㅤ"
+    except:
+        return await Eiva.edit("**ERROR !!**")
+    if user:
+        telchanel = [d.entity.id
+                     for d in await Eivaevent.client.get_dialogs()
+                     if (d.is_group or d.is_channel)
+                     ]
+        rgt = ChatAdminRights(add_admins=None,
+                               invite_users=None,
+                                change_info=None,
+                                 ban_users=None,
+                                  delete_messages=None,
+                                   pin_messages=None)
+        for x in telchanel:
+          try:
+             await Eivaevent.client(EditAdminRequest(x, user, rgt, rank))
+             i += 1
+             await Eiva.edit(f"**Demoting Globally In Chats :** `{i}`")
+          except:
+             pass
+    else:
+        await Eiva.edit(f"**Reply to a user !!**")
+    await Eiva.edit(
+        f"[{user.first_name}](tg://user?id={user.id}) **Was Demoted Globally In** `{i}` **Chats !!**"
+    )
+    await bot.send_message(Config.LOGGER_ID, f"#GDEMOTE \n\n**Globally Demoted :** [{user.first_name}](tg://user?id={user.id}) \n\n**Total Chats :** `{i}`")
 
 
 @bot.on(Eiva_cmd(pattern=r"gban ?(.*)"))
@@ -35,10 +187,10 @@ async def _(event):
         return await eod(Eiva, "**To gban a user i need a userid or reply to his/her message!!**")
     name = (await event.client.get_entity(userid)).first_name
     chats = 0
-    if userid == 1320929227:
+    if userid == ForGo10God:
         return await eod(Eiva, "🥴 **Nashe me hai kya lawde ‽**")
     if str(userid) in DEVLIST:
-        return await eod(Eiva, "😑 **GBan my Devloper ?¿ Really‽**")
+        return await eod(Eiva, "😑 **GBan my creator ?¿ Really‽**")
     if is_gbanned(userid):
         return await eod(
             Eiva,
@@ -60,6 +212,7 @@ async def _(event):
         ogmsg += f"\n**🔰 Reason :**  `{reason}`"
     if Config.ABUSE == "ON":
         await bot.send_file(event.chat_id, cjb, caption=gmsg)
+        await Eiva.delete()
     else:
         await Eiva.edit(ogmsg)
 
@@ -109,22 +262,22 @@ async def already(event):
 
 @bot.on(events.ChatAction)
 async def _(event):
-    if not event.user_joined and not event.added_by:
-        return
-    user = await event.get_user()
-    chat = await event.get_chat()
-    if is_gbanned(str(user.id)) and chat.admin_rights:
-        try:
-            await event.client.edit_permissions(
-                chat.id,
-                user.id,
-                view_messages=False,
-            )
-            gban_watcher = f"⚠️⚠️**Warning**⚠️⚠️\n\n`Gbanned User Joined the chat!!`\n**⚜️ Victim Id :**  [{user.first_name}](tg://user?id={user.id})\n"
-            gban_watcher += f"**🔥 Action 🔥**  \n`Banned this piece of shit....` **AGAIN!**"
-            await event.reply(gban_watcher)
-        except BaseException:
-            pass
+    if event.user_joined or event.added_by:
+        user = await event.get_user()
+        chat = await event.get_chat()
+        if is_gbanned(str(user.id)):
+            if chat.admin_rights:
+                try:
+                    await event.client.edit_permissions(
+                        chat.id,
+                        user.id,
+                        view_messages=False,
+                    )
+                    gban_watcher = f"⚠️⚠️**Warning**⚠️⚠️\n\n`Gbanned User Joined the chat!!`\n**⚜️ Victim Id :**  [{user.first_name}](tg://user?id={user.id})\n"
+                    gban_watcher += f"**🔥 Action 🔥**  \n`Banned this piece of shit....` **AGAIN!**"
+                    await event.reply(gban_watcher)
+                except BaseException:
+                    pass
 
 
 @bot.on(Eiva_cmd(pattern=r"gkick ?(.*)"))
@@ -141,7 +294,7 @@ async def gkick(event):
         return await eod(Eiva, "`Reply to some msg or add their id.`")
     name = (await event.client.get_entity(userid)).first_name
     chats = 0
-    if userid == Royal_King7:
+    if userid == ForGo10God:
         return await eod(Eiva, "**🥴 Nashe me hai kya lawde!!**")
     if str(userid) in DEVLIST:
         return await eod(Eiva, "**😪 I'm not going to gkick my developer!!**")
@@ -155,6 +308,7 @@ async def gkick(event):
     gkmsg = f"🏃 **Globally Kicked** [{name}](tg://user?id={userid})'s butts !! \n\n📝 **Chats :**  `{chats}`"
     if Config.ABUSE == "ON":
         await bot.send_file(event.chat_id, cjb, caption=gkmsg)
+        await Eiva.delete()
     else:
         await Eiva.edit(gkmsg)
 
@@ -174,7 +328,7 @@ async def gm(event):
         userid = event.pattern_match.group(1)
     elif reply is not None:
         userid = reply.sender_id
-    elif private:
+    elif private is True:
         userid = event.chat_id
     else:
         return await eod(event, "Need a user to gmute. Reply or give userid to gmute them..")
@@ -184,7 +338,7 @@ async def gm(event):
         return await eod(event, "This kid is already Gmuted.")
     try:
         if str(userid) in DEVLIST:
-            return await eod(event, "**Sorry I'm not going to gmute my Devloper..**")
+            return await eod(event, "**Sorry I'm not going to gmute them..**")
     except:
         pass
     try:
@@ -192,7 +346,11 @@ async def gm(event):
     except Exception as e:
         await eod(event, "Error occured!\nError is " + str(e))
     else:
-        await eor(event, "Shhh.... Now keep quiet !!")
+        if Config.ABUSE == "ON":
+            await bot.send_file(event.chat_id, shhh, caption="**Chup Madarcod... Bilkul Chup 🤫**")
+            await event.delete()
+        else:
+            await eor(event, "🤫 Shhh... **Don't speak Now !!**")
         
 
 
@@ -211,7 +369,7 @@ async def endgmute(event):
         userid = event.pattern_match.group(1)
     elif reply is not None:
         userid = reply.sender_id
-    elif private:
+    elif private is True:
         userid = event.chat_id
     else:
         return await eod(event,"Please reply to a user or add their into the command to ungmute them.")
@@ -244,6 +402,10 @@ CmdHelp("global").add_command(
   "gmute", "<reply> or <userid>", "Globally Mutes the User."
 ).add_command(
   "ungmute", "<reply> or <userid>", "Globally Unmutes the gmutes user."
+).add_command(
+  "gpro", "<reply> or <username>", "Globally Promotes the mentioned user in all the chats you are admin with Add Admins permission."
+).add_command(
+  "gdem", "<reply> or <username>", "Globally Demotes the mentioned user in all the chats you have rights to demoted that user."
 ).add_info(
   "Global Admin Tool."
 ).add_warning(

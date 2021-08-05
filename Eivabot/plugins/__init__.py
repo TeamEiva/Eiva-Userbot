@@ -15,6 +15,7 @@ Eiva_logo = "./Eivabot/resources/pics/Eivabot_logo.jpg"
 cjb = "./Eivabot/resources/pics/cjb.jpg"
 restlo = "./Eivabot/resources/pics/rest.jpeg"
 shuru = "./Eivabot/resources/pics/shuru.jpg"
+shhh = "./Eivabot/resources/pics/chup_madarchod.jpeg"
 hl = Config.HANDLER
 shl = Config.SUDO_HANDLER
 Eiva_ver = __Eiva__
