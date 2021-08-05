@@ -6,6 +6,7 @@ import shutil
 import re
 import textwrap
 import lottie
+import asyncio
 
 from PIL import Image, ImageDraw, ImageEnhance, ImageFont, ImageOps
 
@@ -20,51 +21,88 @@ if not os.path.isdir(path):
 @bot.on(Eiva_cmd(pattern="mmf ?(.*)", outgoing=True))
 @bot.on(sudo_cmd(pattern="mmf ?(.*)", allow_sudo=True))
 async def _(event):
-    if event.fwd_from:
+    _reply = await event.get_reply_message()
+    msg = event.pattern_match.group(1)
+    if not (_reply and (_reply.media)):
+        hel_ = await eod(event, "`Can't memify this 🥴`")
         return
-    if not event.reply_to_msg_id:
-        await eod(event, "You need to reply to an image with .mmf` 'text on top' ; 'text on bottom'")
-        return
-    await eor(event, "🤪 **Memifying...**")
-    reply = await event.get_reply_message()
-    imgs = await bot.download_media(reply.media, path)
-    img = cv2.VideoCapture(imgs) 
-    tal, semx = img.read()
-    cv2.imwrite("kraken.webp", semx)
-    text = event.pattern_match.group(1)
-    webp_file = await draw_meme_text("kraken.webp", text)
-    await event.client.send_file(
-        event.chat_id, webp_file, reply_to=event.reply_to_msg_id
+    Eiva = await _reply.download_media()
+    if Eiva.endswith((".tgs")):
+        hel_ = await eor(event, "**Memifying 🌚🌝**")
+        cmd = ["lottie_convert.py", Eiva, "pic.png"]
+        file = "pic.png"
+        process = await asyncio.create_subprocess_exec(
+            *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+        )
+        stdout, stderr = await process.communicate()
+        stderr.decode().strip()
+        stdout.decode().strip()
+    elif Eiva.endswith((".webp", ".png")):
+        hel_ = await eor(event, "**Memifying 🌚🌝**")
+        pics = Image.open(Eiva)
+        pics.save("pic.png", format="PNG", optimize=True)
+        file = "pic.png"
+    else:
+        hel_ = await eor(event, "**Memifying 🌚🌝**")
+        img = cv2.VideoCapture(Eiva)
+        tal, semx = img.read()
+        cv2.imwrite("pic.png", semx)
+        file = "pic.png"
+    output = await draw_meme_text(file, msg)
+    await bot.send_file(
+        event.chat_id, output, force_document=False, reply_to=event.reply_to_msg_id
     )
-    await event.delete()
-    shutil.rmtree(path)
-    os.remove("kraken.webp")
-    os.remove(webp_file)
+    await hel_.delete()
+    try:
+        os.remove(Eiva)
+        os.remove(file)
+        os.remove(output)
+    except BaseException:
+        pass
 
 
 @bot.on(Eiva_cmd(pattern="mms ?(.*)", outgoing=True))
 @bot.on(sudo_cmd(pattern="mms ?(.*)", allow_sudo=True))
-async def sed(Eivaboy):
-    if Eivaboy.fwd_from:
+async def _(event):
+    _reply = await event.get_reply_message()
+    msg = event.pattern_match.group(1)
+    if not (_reply and (_reply.media)):
+        hel_ = await eod(event, "`Can't memify this 🥴`")
         return
-    if not Eivaboy.reply_to_msg_id:
-        await eod(Eivaboy, "You need to reply to an image with .mms` 'text on top' ; 'text on bottom'")
-        return
-    await eor(Eivaboy, "🤪 **Memifying...**")
-    reply = await Eivaboy.get_reply_message()
-    imgs = await bot.download_media(reply.media, path)
-    img = cv2.VideoCapture(imgs) 
-    tal, semx = img.read()
-    cv2.imwrite("kraken.webp", semx)
-    text = Eivaboy.pattern_match.group(1)
-    photo = await draw_meme("kraken.webp", text)
-    await Eivaboy.client.send_file(
-        Eivaboy.chat_id, photo, reply_to=Eivaboy.reply_to_msg_id
+    Eiva = await _reply.download_media()
+    if Eiva.endswith((".tgs")):
+        hel_ = await eor(event, "**Memifying 🌚🌝**")
+        cmd = ["lottie_convert.py", Eiva, "pic.png"]
+        file = "pic.png"
+        process = await asyncio.create_subprocess_exec(
+            *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+        )
+        stdout, stderr = await process.communicate()
+        stderr.decode().strip()
+        stdout.decode().strip()
+    elif Eiva.endswith((".webp", ".png")):
+        hel_ = await eor(event, "**Memifying 🌚🌝**")
+        pic = Image.open(Eiva)
+        pic.save("pic.png", format="PNG", optimize=True)
+        file = "pic.png"
+    else:
+        hel_ = await eor(event, "**Memifying 🌚🌝**")
+        img = cv2.VideoCapture(Eiva)
+        tal, semx = img.read()
+        cv2.imwrite("pic.png", semx)
+        file = "pic.png"
+    output = await draw_meme(file, msg)
+    await bot.send_file(
+        event.chat_id, output, force_document=False, reply_to=event.reply_to_msg_id
     )
-    await Eivaboy.delete()
-    shutil.rmtree(path)
-    os.remove("kraken.webp")
-    os.remove(photo)
+    await hel_.delete()
+    try:
+        os.remove(Eiva)
+        os.remove(file)
+    except BaseException:
+        pass
+    os.remove(pic)
+
     
 @bot.on(Eiva_cmd(pattern="doge(?: |$)(.*)", outgoing=True))
 @bot.on(sudo_cmd(pattern="doge(?: |$)(.*)", allow_sudo=True))
@@ -73,10 +111,11 @@ async def nope(kraken):
     if not Eiva:
         if kraken.is_reply:
             (await kraken.get_reply_message()).message
-        elif Config.ABUSE == "ON":
-            return await eor(kraken, "Abe chumtiye kuch likhne ke liye de")
         else:
-            return await eor(kraken, "Doge need some text to make sticker.")
+            if Config.ABUSE == "ON":
+                return await eor(kraken, "Abe chumtiye kuch likhne ke liye de")
+            else:
+                return await eor(kraken, "Doge need some text to make sticker.")
 
     troll = await bot.inline_query("DogeStickerBot", f"{(deEmojify(Eiva))}")
     if troll:
@@ -100,10 +139,11 @@ async def nope(kraken):
     if not Eiva:
         if kraken.is_reply:
             (await kraken.get_reply_message()).message
-        elif Config.ABUSE == "ON":
-            return await eor(kraken, "Abe chumtiye kuch likhne ke liye de")
         else:
-            return await eor(kraken, "Doge need some text to make sticker.")
+            if Config.ABUSE == "ON":
+                return await eor(kraken, "Abe chumtiye kuch likhne ke liye de")
+            else:
+                return await eor(kraken, "Doge need some text to make sticker.")
 
     troll = await bot.inline_query("GooglaxBot", f"{(deEmojify(Eiva))}")
     if troll:
@@ -121,9 +161,9 @@ async def nope(kraken):
 
     
 CmdHelp("memify").add_command(
-  "mmf", "<reply to a img/stcr/gif> <upper text> ; <lower text>", "Memifies the replied image/gif/sticker with your text and sends output in sticker format.", "mmf <reply to a img/stcr/gif> hii ; Eivao"
+  "mmf", "<reply to a img/stcr/gif> <upper text> ; <lower text>", "Memifies the replied image/gif/sticker with your text and sends output in sticker format.", "mmf <reply to a img/stcr/gif> hii ; Hello"
 ).add_command(
-  "mms", "<reply to a img/stcr/gif> <upper text> ; <lower text>", "Memifies the replied image/gif/sticker with your text and sends output in image format.", "mms <reply to a img/stcr/gif> hii ; Eivao"
+  "mms", "<reply to a img/stcr/gif> <upper text> ; <lower text>", "Memifies the replied image/gif/sticker with your text and sends output in image format.", "mms <reply to a img/stcr/gif> hii ; Hello"
 ).add_command(
   "doge", "<text>", "Makes A Sticker of Doge with given text."
 ).add_command(
