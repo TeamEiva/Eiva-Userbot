@@ -30,8 +30,12 @@ async def bigspam(Eiva):
     if not Eiva.text[0].isalpha() and Eiva.text[0] not in ("/", "#", "@", "!"):
         Eiva_msg = Eiva.text
         Eivabot_count = int(Eiva_msg[9:13])
-        Eiva_spam = str(Eiva.text[13:])
-        for _ in range(1, Eivabot_count):
+        reply_msg = await Eiva.get_reply_message()
+        if reply_msg:
+            Eiva_spam = reply_msg
+        else:
+            Eiva_spam = str(Eiva.text[13:])
+        for i in range(1, Eivabot_count):
             await Eiva.respond(Eiva_spam)
         await Eiva.delete()
         await Eiva.client.send_message(
@@ -54,6 +58,49 @@ async def spammer(e):
         await asyncio.sleep(spamDelay)
 
 
+@bot.on(Eiva_cmd(pattern="uspam ?(.*)"))
+@bot.on(sudo_cmd(pattern="uspam ?(.*)", allow_sudo=True))
+async def _(event):
+    reply_msg = await event.get_reply_message()
+    Eiva = event.pattern_match.group(1)
+    if reply_msg:
+        input_str = reply_msg
+    else:
+        input_str = Eiva
+    await bot.send_message(lg_id, f"#UNLIMITED_SPAM \n\nStarted Unlimited Spam. Will spam till floodwait. Do `{hl}restart` to stop.")
+    x = 0
+    while x < 69:
+        await bot.send_message(event.chat_id, input_str)
+
+
+# Special Break Spam Module Made By Chirag Bhargava.
+# Team EivaBot
+@bot.on(Eiva_cmd(pattern="bspam ?(.*)"))
+@bot.on(sudo_cmd(pattern="bspam ?(.*)", allow_sudo=True))
+async def spammer(e):
+    if not e.text[0].isalpha() and e.text[0] not in ("/", "#", "@", "!"):
+        message = e.text
+        counter = int(message[7:11])
+        reply_msg = await e.get_reply_message()
+        if reply_msg:
+            spam_message = reply_msg
+        else:
+            spam_message = str(e.text[12:])
+        rd = int(counter % 100)
+        tot = int((counter - rd )/100)
+        a = 30
+        for q in range(tot):
+            for p in range(100):
+                await asyncio.wait([e.respond(spam_message)])
+            a = a + 2
+            await asyncio.sleep(a)
+
+        await e.delete()
+        await e.client.send_message(
+            lg_id, f"#BREAK_SPAM \n\nSpammed  {counter}  messages!!"
+        )
+
+
 @bot.on(Eiva_cmd(pattern="mspam (.*)"))
 @bot.on(sudo_cmd(pattern="mspam (.*)", allow_sudo=True))
 async def tiny_pic_spam(e):
@@ -70,10 +117,11 @@ async def tiny_pic_spam(e):
             not reply_message
             or not e.reply_to_msg_id
             or not reply_message.media
+            or not reply_message.media
         ):
             return await e.edit("```Reply to a pic/sticker/gif/video message```")
         message = reply_message.media
-        for _ in range(1, counter):
+        for i in range(1, counter):
             await e.client.send_file(e.chat_id, message)
     except:
         return await e.reply(
@@ -82,13 +130,17 @@ async def tiny_pic_spam(e):
 
 
 CmdHelp("spam").add_command(
-  "spam", "<number> <text>", "Sends the text 'X' number of times.", ".spam 99 Eivao"
+  "spam", "<number> <text>", "Sends the text 'X' number of times.", "spam 99 Hello"
 ).add_command(
-  "mspam", "<reply to media> <number>", "Sends the replied media (gif/ video/ sticker/ pic) 'X' number of times", ".mspam 100 <reply to media>"
+  "mspam", "<reply to media> <number>", "Sends the replied media (gif/ video/ sticker/ pic) 'X' number of times", "mspam 100 <reply to media>"
 ).add_command(
-  "dspam", "<delay> <spam count> <text>", "Sends the text 'X' number of times in 'Y' seconds of delay", ".dspam 5 100 Eivao"
+  "dspam", "<delay> <spam count> <text>", "Sends the text 'X' number of times in 'Y' seconds of delay", "dspam 5 100 Hello"
 ).add_command(
-  "bigspam", "<count> <text>", "Sends the text 'X' number of times. This what Eivabot iz known for. The Best BigSpam Ever", ".bigspam 5000 Eivao"
+  "uspam", "<reply to a msg> or <text>", "Spams the message unlimited times until you get floodwait error.", "uspam Hello"
+).add_command(
+  "bspam", "<count> <text or reply>", "Spams the message X times without floodwait. Breaks the spam count to avoid floodwait.", "bspam 9999 Hello"
+).add_command(
+  "bigspam", "<count> <text>", "Sends the text 'X' number of times. This what Eivabot iz known for. The Best BigSpam Ever", "bigspam 5000 Hello"
 ).add_info(
   "Spammers Commands"
 ).add_warning(
