@@ -16,7 +16,6 @@ async def _(event):
     reply_message = await event.get_reply_message()
     Eiva = event.pattern_match.group(1)
     chat = "@QuotLyBot"
-
     await eor(event, "```Making a Quote...```")
     async with bot.conversation(chat) as conv:
         try:
