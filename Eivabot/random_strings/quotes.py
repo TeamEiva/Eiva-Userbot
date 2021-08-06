@@ -45,7 +45,7 @@ METOOSTR = [
     "Me rn",
 ]
 
-perf = "[ †hê Hêllẞø† ]"
+perf = "[ 𝙀𝙄𝙑𝘼 𝙐𝙎𝙀𝙍𝘽𝙊𝙏 ]"
 
 GDNOON = [
     "`My wishes will always be with you, Morning wish to make you feel fresh, Afternoon wish to accompany you, Evening wish to refresh you, Night wish to comfort you with sleep, Good Afternoon Dear!`",
