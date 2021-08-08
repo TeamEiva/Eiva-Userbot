@@ -69,7 +69,7 @@ async def Eivabott(event):
         ]
 
         for i in sayfa:
-            string += f"`▶️ `"
+            string += f"`✘ `"
             for sira, a in enumerate(i):
                 string += "`" + str(a)
                 string += "`" if sira == i.index(i[-1]) else "`, "
