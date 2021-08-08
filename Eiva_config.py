@@ -40,7 +40,7 @@ class Config((object)):
     CUSTOM_PMPERMIT = os.environ.get("CUSTOM_PMPERMIT", None)
     DB_URI = os.environ.get("DATABASE_URL", None)
     DUAL_LOG = os.environ.get("DUAL_LOG", None)
-    EMOJI_IN_HELP = os.environ.get("EMOJI_IN_HELP", "🔸")
+    EMOJI_IN_HELP = os.environ.get("EMOJI_IN_HELP", "✘")
     EXTRA = os.environ.get("EXTRA", None)
 # yo yo Boy
     EXTRA_REPO = os.environ.get("EXTRA_REPO", None)
