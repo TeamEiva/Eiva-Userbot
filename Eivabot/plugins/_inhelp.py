@@ -22,12 +22,15 @@ Eiva_emoji = Config.EMOJI_IN_HELP
 Eiva_pic = Config.PMPERMIT_PIC or "https://telegra.ph/file/5501c52fed1b2229ad03d.jpg"
 cstm_pmp = Config.CUSTOM_PMPERMIT
 ALV_PIC = Config.ALIVE_PIC
-
+help_pic = Config.HELP_PIC or "https://telegra.ph/file/a8eabf276ac11cf16f338.jpg"
 PM_WARNS = {}
 PREV_REPLY_MESSAGE = {}
 
 mybot = Config.BOT_USERNAME
-botname = mybot if mybot.startswith("@") else f"@{mybot}"
+if mybot.startswith("@"):
+    botname = mybot
+else:
+    botname = f"@{mybot}"
 LOG_GP = Config.LOGGER_ID
 mssge = (
     str(cstm_pmp)
@@ -43,15 +46,14 @@ Eiva_FIRST = (
     "{}\n\n**Please Choose Why You Are Here!!**".format(Eiva_mention, mssge))
 
 alive_txt = """
-**⚜️ єιναϐοτ ιѕ οиℓιиє ⚜️**
+**⚜️ єιναϐοτ ιѕ σиℓιиє ⚜️**
 {}
-**🏅 BθƬ SƬΛƬЦS 🏅**
+**🏅 𝙱𝚘𝚝 𝚂𝚝𝚊𝚝𝚞𝚜 🏅**
 
-**ƬΣLΣƬΉθП :**  `{}`
+**Telethon :**  `{}`
 **ΣIVΛBθƬ  :**  **{}**
-**ЦPƬIMΣ   :**  `{}`
-**ΛBЦSΣ    :**  **{}**
-**SЦDθ      :**  **{}**
+**Abuse    :**  **{}**
+**Sudo      :**  **{}**
 """
 
 def button(page, modules):
@@ -64,31 +66,32 @@ def button(page, modules):
         pairs.append([modules[-1]])
     max_pages = ceil(len(pairs) / Row)
     pairs = [pairs[i : i + Row] for i in range(0, len(pairs), Row)]
-    buttons = [
-        [
-            custom.Button.inline(
-                f"{Eiva_emoji} " + pair + f" {Eiva_emoji}",
-                data=f"Information[{page}]({pair})",
-            )
-            for pair in pairs
-        ]
-        for pairs in pairs[page]
-    ]
+    buttons = []
+    for pairs in pairs[page]:
+        buttons.append(
+            [
+                custom.Button.inline(f"{Eiva_emoji} " + pair + f" {Eiva_emoji}", data=f"Information[{page}]({pair})")
+                for pair in pairs
+            ]
+        )
 
     buttons.append(
         [
             custom.Button.inline(
-               f"« Back {Eiva_emoji}", data=f"page({(max_pages - 1) if page == 0 else (page - 1)})"
+               f"✘ Back {Eiva_emoji}", data=f"page({(max_pages - 1) if page == 0 else (page - 1)})"
             ),
             custom.Button.inline(
                f"• ❌ •", data="close"
             ),
             custom.Button.inline(
-               f"{Eiva_emoji} Next »", data=f"page({0 if page == (max_pages - 1) else page + 1})"
+               f"{Eiva_emoji} Next ✘", data=f"page({0 if page == (max_pages - 1) else page + 1})"
             ),
         ]
     )
     return [max_pages, buttons]
+
+
+    modules = CMD_HELP
 if Config.BOT_USERNAME is not None and tgbot is not None:
     @tgbot.on(InlineQuery)  # pylint:disable=E0602
     async def inline_handler(event):
@@ -102,12 +105,29 @@ if Config.BOT_USERNAME is not None and tgbot is not None:
             for x in CMD_LIST.values():
                 for y in x:
                     apn.append(y)
-            result = await builder.article(
-                f"Hey! Only use .help please",
-                text=f"Eiva[🤖](https://telegra.ph/file/a8eabf276ac11cf16f338.jpg)\n 🔰 **{Eiva_mention}**\n\n📜 __No.of Plugins__ : `{len(CMD_HELP)}` \n🗂️ __Commands__ : `{len(apn)}`\n🗒️ __Page__ : 1/{veriler[0]}",
-                buttons=veriler[1],
-                link_preview=True,
-            )
+            help_msg = f"🔰 **{Eiva_mention}**\n\n📜 __No.of Plugins__ : `{len(CMD_HELP)}` \n🗂️ __Commands__ : `{len(apn)}`\n🗒️ __Page__ : 1/{veriler[0]}"
+            if help_pic and help_pic.endswith((".jpg", ".png")):
+                result = builder.photo(
+                    help_pic,
+                    text=help_msg,
+                    buttons=veriler[1],
+                    link_preview=False,
+                )
+            elif help_pic:
+                result = builder.document(
+                    help_pic,
+                    text=help_msg,
+                    title="EivaBot Alive",
+                    buttons=veriler[1],
+                    link_preview=False,
+                )
+            else:
+                result = builder.article(
+                    f"Hey! Only use .help please",
+                    text=help_msg,
+                    buttons=veriler[1],
+                    link_preview=False,
+                )
         elif event.query.user_id == bot.uid and query.startswith("fsub"):
             hunter = event.pattern_match.group(1)
             Eiva = hunter.split("+")
@@ -130,7 +150,7 @@ if Config.BOT_USERNAME is not None and tgbot is not None:
             ]
 
         elif event.query.user_id == bot.uid and query == "alive":
-            he_ll = alive_txt.format(Config.ALIVE_MSG, tel_ver, Eiva_ver, uptime, abuse_m, is_sudo)
+            he_ll = alive_txt.format(Config.ALIVE_MSG, tel_ver, Eiva_ver, abuse_m, is_sudo)
             alv_btn = [
                 [Button.url(f"{Eiva_USER}", f"tg://openmessage?user_id={ForGo10God}")],
                 [Button.url("My Channel", f"https://t.me/{my_channel}"), 
@@ -177,10 +197,10 @@ if Config.BOT_USERNAME is not None and tgbot is not None:
         elif event.query.user_id == bot.uid and query == "repo":
             result = builder.article(
                 title="Repository",
-                text=f"**⚡ ɛɢɛռɖαʀʏ ᴀғ єιναϐοτ ⚡**",
+                text=f"**⚡ ʟɛɢɛռɖaʀʏ ᴀғ ΣIVΛBθƬ ⚡**",
                 buttons=[
-                    [Button.url("📑 Repo 📑", "https://t.me/EivaSupport")],
-                    [Button.url("🚀 Deploy 🚀", "https://dashboard.heroku.com/new?button-url=https%3A%2F%2Fgithub.com%2FTeamEivaBot%2FEivaBot&template=https%3A%2F%2Fgithub.com%2FTeamEivabot%2FEivabot")],
+                    [Button.url("📑 Repo 📑", "https://github.com/TeamEiva/EivaBot")],
+                    [Button.url("🚀 Deploy 🚀", "https://dashboard.heroku.com/new?button-url=https%3A%2F%2Fgithub.com%2FTeamEiva%2FEivaBot&template=https%3A%2F%2Fgithub.com%2FteamEiva%2FEivabot")],
                 ],
             )
 
@@ -195,8 +215,8 @@ if Config.BOT_USERNAME is not None and tgbot is not None:
 
         else:
             result = builder.article(
-                "@TheEiva",
-                text="""**Hey! This is [ΣIVΛBθƬ](https://t.me/TheEiva) \nYou can know more about me from the links given below 👇**""",
+                "@Its_EivaBot",
+                text="""**Hey! This is [ΣIVΛBθƬ](https://t.me/its_Eivabot) \nYou can know more about me from the links given below 👇**""",
                 buttons=[
                     [
                         custom.Button.url("🔥 CHANNEL 🔥", "https://t.me/TheEiva"),
@@ -206,10 +226,10 @@ if Config.BOT_USERNAME is not None and tgbot is not None:
                     ],
                     [
                         custom.Button.url(
-                            "✨ REPO ✨", "https://github.com/TeamEivaBot/EivaBot"),
+                            "✨ REPO ✨", "https://github.com/TeamEiva/EivaBot"),
                         custom.Button.url
                     (
-                            "🔰 TUTORIAL 🔰", "https://youtu.be/M2FQJq_sHp4"
+                            "🔰 TUTORIAL 🔰", "https://youtu.be/M2Fq_sHp4"
                     )
                     ],
                 ],
@@ -291,7 +311,7 @@ if Config.BOT_USERNAME is not None and tgbot is not None:
     async def on_pm_click(event):
         hunter = (event.data_match.group(1)).decode("UTF-8")
         Eiva = hunter.split("+")
-        if event.sender_id != int(Eiva[0]):
+        if not event.sender_id == int(Eiva[0]):
             return await event.answer("This Ain't For You!!", alert=True)
         try:
             await bot(GetParticipantRequest(int(Eiva[1]), int(Eiva[0])))
@@ -366,7 +386,7 @@ if Config.BOT_USERNAME is not None and tgbot is not None:
         try:
             buttons = [
                 custom.Button.inline(
-                    "✘ " + cmd[0] + " ✘", data=f"commands[{commands}[{page}]]({cmd[0]})"
+                    "⚡ " + cmd[0] + " ⚡", data=f"commands[{commands}[{page}]]({cmd[0]})"
                 )
                 for cmd in CMD_HELP_BOT[commands]["commands"].items()
             ]
@@ -400,10 +420,10 @@ if Config.BOT_USERNAME is not None and tgbot is not None:
         commands = event.data_match.group(3).decode("UTF-8")
         result = f"**📗 File :**  `{cmd}`\n"
         if CMD_HELP_BOT[cmd]["info"]["info"] == "":
-            if CMD_HELP_BOT[cmd]["info"]["warning"] != "":
+            if not CMD_HELP_BOT[cmd]["info"]["warning"] == "":
                 result += f"**⚠️ Warning :**  {CMD_HELP_BOT[cmd]['info']['warning']}\n\n"
         else:
-            if CMD_HELP_BOT[cmd]["info"]["warning"] != "":
+            if not CMD_HELP_BOT[cmd]["info"]["warning"] == "":
                 result += f"**⚠️ Warning :**  {CMD_HELP_BOT[cmd]['info']['warning']}\n"
             result += f"**ℹ️ Info :**  {CMD_HELP_BOT[cmd]['info']['info']}\n\n"
         command = CMD_HELP_BOT[cmd]["commands"][commands]
