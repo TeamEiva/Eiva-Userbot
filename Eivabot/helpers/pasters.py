@@ -1,6 +1,7 @@
 import json
-
 import requests
+
+from html_telegraph_poster import TelegraphPoster
 
 from Eivabot import *
 
@@ -36,3 +37,16 @@ async def pasty(message, extension=None):
             "bin": "Pasty",
         }
     return {"error": "Unable to reach pasty.lus.pm"}
+
+
+async def telegraph_paste(page_title, temxt):
+    cl1ent = TelegraphPoster(use_api=True)
+    auth = "[ EIVABOT ]"
+    cl1ent.create_api_token(auth)
+    post_page = cl1ent.post(
+        title=page_title,
+        author=auth,
+        author_url="https://t.me/TheEiva",
+        text=temxt,
+    )
+    return post_page["url"]
