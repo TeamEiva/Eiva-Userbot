@@ -47,8 +47,8 @@ async def _(event):
         "**Process exited with** `status 143`",
         "**Starting process with command** `python3 -m stdborg`",
         "**State changed from starting to up**",
-        "__INFO:Hêllẞø†:Logged in as 557667062__",
-        "__INFO:Hêllẞø†:Successfully loaded all plugins__",
+        "__INFO:EIVABOT:Logged in as 557667062__",
+        "__INFO:EIVABOT:Successfully loaded all plugins__",
         "**Build Succeeded**",
     ]
     for i in animation_ttl:
@@ -59,7 +59,7 @@ async def _(event):
 @bot.on(Eiva_cmd(pattern=r"dump$", outgoing=True))
 @bot.on(sudo_cmd(pattern=r"dump$", allow_sudo=True))
 async def _(message):
-    if event.fwd_from:
+    if message.fwd_from:
         return
     try:
         obj = message.pattern_match.group(1)
@@ -223,8 +223,8 @@ async def _(event):
         await asyncio.sleep(animation_interval)
         await event.edit(animation_chars[i % 12])
         
-@bot.on(Eiva_cmd(pattern=f"hack$", outgoing=True))
-@bot.on(sudo_cmd(pattern=f"hack$", allow_sudo=True))
+@bot.on(Eiva_cmd(pattern=f"wahack$", outgoing=True))
+@bot.on(sudo_cmd(pattern=f"wahack$", allow_sudo=True))
 async def _(event):
     if event.fwd_from:
         return
@@ -378,7 +378,7 @@ async def _(event):
 
     animation_interval = 0.5
 
-    animation_ttl = range(101)
+    animation_ttl = range(0, 101)
 
     await eor(event, "phub")
 
@@ -410,7 +410,7 @@ async def _(event):
 
     animation_interval = 0.5
 
-    animation_ttl = range(101)
+    animation_ttl = range(0, 101)
 
     await eor(event, "amore")
 
@@ -441,7 +441,7 @@ async def _(event):
 
     animation_interval = 0.5
 
-    animation_ttl = range(101)
+    animation_ttl = range(0, 101)
 
     await eor(event, "Sexy")
 
@@ -465,15 +465,15 @@ async def _(event):
 async def ammastar(Eivastar):
   
     if Eivastar.fwd_from:
-
+      
         return
-
+      
     animation_interval = 2
-
-    animation_ttl = range(11)
-
+    
+    animation_ttl = range(0, 11)
+    
     await eor(Eivastar, "I am A Star")
-
+    
     animation_chars = [
         "I Party like a rockstar",
         "I Look like a movie star",
@@ -481,11 +481,11 @@ async def ammastar(Eivastar):
         "I Fuck like a pornstar",
         "Baby I'm a superstar",
     ]
-
+    
     for i in animation_ttl:
-
+      
         await asyncio.sleep(animation_interval)
-
+        
         await Eivastar.edit(animation_chars[i % 11])
     
         
@@ -552,8 +552,10 @@ async def _(event):
 
     animation_interval = 0.5
 
-    animation_ttl = range(11)
+    animation_ttl = range(0, 11)
+
   #  input_str = event.pattern_match.group(1)
+
   #  if input_str == "switch":
 
     await eor(event, "Switch")
@@ -587,29 +589,6 @@ async def sprinkle(event):
     await eor(event, 
         "✨.•*¨*.¸.•*¨*.¸¸.•*¨*• ƸӜƷ\n🌸🌺🌸🌺🌸🌺🌸🌺\n Sprinkled with love❤\n🌷🌻🌷🌻🌷🌻🌷🌻\n ¨*.¸.•*¨*. ¸.•*¨*.¸¸.•*¨`*•.✨\n🌹🍀🌹🍀🌹🍀🌹🍀"
     )
-    
-
-@bot.on(Eiva_cmd(pattern=r"f", outgoing=True))
-@bot.on(sudo_cmd(pattern=r"f", allow_sudo=True))
-async def payf(event):
-    if event.fwd_from:
-        return
-    paytext = event.pattern_match.group(1)
-    pay = "{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}".format(
-        paytext * 8,
-        paytext * 8,
-        paytext * 2,
-        paytext * 2,
-        paytext * 2,
-        paytext * 6,
-        paytext * 6,
-        paytext * 2,
-        paytext * 2,
-        paytext * 2,
-        paytext * 2,
-        paytext * 2,
-    )
-    await eor(event, pay)
 
 
 @bot.on(Eiva_cmd(outgoing=True, pattern="kiler( (.*)|$)"))
@@ -1020,6 +999,68 @@ async def _(event):
     await asyncio.sleep(6)
 
 
+@bot.on(Eiva_cmd(pattern=r"padmin ?(.*)", outgoing=True))
+@bot.on(sudo_cmd(pattern=r"padmin ?(.*)", allow_sudo=True))
+async def _(event):
+    if event.fwd_from:
+        return
+    animation_interval = 1
+    animation_ttl = range(0, 20)
+    event = await eor(event, "padmin")
+    animation_chars = [
+        "**Promoting User As Admin...**",
+        "**Enabling All Permissions To User...**",
+        "**(1) Send Messages: ☑️**",
+        "**(1) Send Messages: ✅**",
+        "**(2) Send Media: ☑️**",
+        "**(2) Send Media: ✅**",
+        "**(3) Send Stickers & GIFs: ☑️**",
+        "**(3) Send Stickers & GIFs: ✅**",
+        "**(4) Send Polls: ☑️**",
+        "**(4) Send Polls: ✅**",
+        "**(5) Embed Links: ☑️**",
+        "**(5) Embed Links: ✅**",
+        "**(6) Add Users: ☑️**",
+        "**(6) Add Users: ✅**",
+        "**(7) Pin Messages: ☑️**",
+        "**(7) Pin Messages: ✅**",
+        "**(8) Change Chat Info: ☑️**",
+        "**(8) Change Chat Info: ✅**",
+        "**(9) Manage Voice Chat: ☑️**",
+        "**(9) Manage Voice Chat: ✅**",
+        "**Permission Granted Successfully**",
+        "**pRoMooTeD SuCcEsSfUlLy**",
+    ]
+    for i in animation_ttl:
+        await asyncio.sleep(animation_interval)
+        await event.edit(animation_chars[i % 20])
+
+@bot.on(Eiva_cmd(pattern=r"hack$", outgoing=True))
+@bot.on(sudo_cmd(pattern=r"hack$", allow_sudo=True))
+async def _(event):
+    if event.fwd_from:
+        return
+    animation_interval = 2
+    animation_ttl = range(0, 12)
+    event = await eor(event, "hack")
+    animation_chars = [
+        "**Connecting To Telegram Data Centre**",
+        f"`Target Selected By Hacker:` {Eiva_mention}",
+        "`Hacking... 0%\n▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ `\n\n\n  TERMINAL:\nDownloading Bruteforce-Telegram-0.1.tar.gz (9.3 kB)",
+        "`Hacking... 4%\n█▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ `\n\n\n  TERMINAL:\nDownloading Bruteforce-Telegram-0.1.tar.gz (9.3 kB)\nCollecting Data Package",
+        "`Hacking... 8%\n██▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ `\n\n\n  TERMINAL:\nDownloading Bruteforce-Telegram-0.1.tar.gz (9.3 kB)\nCollecting Data Package\n  Downloading Telegram-Data-Sniffer-7.1.1-py2.py3-none-any.whl (82 kB)",
+        "`Hacking... 20%\n█████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ `\n\n\n  TERMINAL:\nDownloading Bruteforce-Telegram-0.1.tar.gz (9.3 kB)\nCollecting Data Package\n  Downloading Telegram-Data-Sniffer-7.1.1-py2.py3-none-any.whl (82 kB)\nBuilding wheel for Tg-Bruteforcing (setup.py): finished with status 'done'",
+        "`Hacking... 36%\n█████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ `\n\n\n  TERMINAL:\nDownloading Bruteforce-Telegram-0.1.tar.gz (9.3 kB)\nCollecting Data Package\n  Downloading Telegram-Data-Sniffer-7.1.1-py2.py3-none-any.whl (82 kB)\nBuilding wheel for Tg-Bruteforcing (setup.py): finished with status 'done'\nCreated wheel for telegram: filename=Telegram-Data-Sniffer-0.0.1-py3-none-any.whl size=1306 sha256=cb224caad7fe01a6649188c62303cd4697c1869fa12d280570bb6ac6a88e6b7e",
+        "`Hacking... 52%\n█████████████▒▒▒▒▒▒▒▒▒▒▒▒ `\n\n\n  TERMINAL:\nDownloading Bruteforce-Telegram-0.1.tar.gz (9.3 kB)\nCollecting Data Package\n  Downloading Telegram-Data-Sniffer-7.1.1-py2.py3-none-any.whl (82 kB)\nBuilding wheel for Tg-Bruteforcing (setup.py): finished with status 'done'\nCreated wheel for telegram: filename=Telegram-Data-Sniffer-0.0.1-py3-none-any.whl size=1306 sha256=cb224caad7fe01a6649188c62303cd4697c1869fa12d280570bb6ac6a88e6b7e\n  Stored in directory: /app/.cache/pip/wheels/a2/9f/b5/650dd4d533f0a17ca30cc11120b176643d27e0e1f5c9876b5b",
+        "`Hacking... 84%\n█████████████████████▒▒▒▒ `\n\n\n  TERMINAL:\nDownloading Bruteforce-Telegram-0.1.tar.gz (9.3 kB)\nCollecting Data Package\n  Downloading Telegram-Data-Sniffer-7.1.1-py2.py3-none-any.whl (82 kB)\nBuilding wheel for Tg-Bruteforcing (setup.py): finished with status 'done'\nCreated wheel for telegram: filename=Telegram-Data-Sniffer-0.0.1-py3-none-any.whl size=1306 sha256=cb224caad7fe01a6649188c62303cd4697c1869fa12d280570bb6ac6a88e6b7e\n  Stored in directory: /app/.cache/pip/wheels/a2/9f/b5/650dd4d533f0a17ca30cc11120b176643d27e0e1f5c9876b5b\n\n **Successfully Hacked Telegram Server Database**",
+        "`Hacking... 100%\n█████████HACKED███████████ `\n\n\n  TERMINAL:\nDownloading Bruteforce-Telegram-0.1.tar.gz (9.3 kB)\nCollecting Data Package\n  Downloading Telegram-Data-Sniffer-7.1.1-py2.py3-none-any.whl (82 kB)\nBuilding wheel for Tg-Bruteforcing (setup.py): finished with status 'done'\nCreated wheel for telegram: filename=Telegram-Data-Sniffer-0.0.1-py3-none-any.whl size=1306 sha256=cb224caad7fe01a6649188c62303cd4697c1869fa12d280570bb6ac6a88e6b7e\n  Stored in directory: /app/.cache/pip/wheels/a2/9f/b5/650dd4d533f0a17ca30cc11120b176643d27e0e1f5c9876b5b\n\n **Successfully Hacked Telegram Server Database**\n\n\n🔹Output: Generating.....",
+        f"`Targeted Account Hacked...\n\nPay 999$ To` {Eiva_mention} `To Remove This Hack`\n\n\n  TERMINAL:\nDownloading Bruteforce-Telegram-0.1.tar.gz (9.3 kB)\nCollecting Data Package\n  Downloading Telegram-Data-Sniffer-7.1.1-py2.py3-none-any.whl (82 kB)\nBuilding wheel for Tg-Bruteforcing (setup.py): finished with status 'done'\nCreated wheel for telegram: filename=Telegram-Data-Sniffer-0.0.1-py3-none-any.whl size=1306 sha256=cb224caad7fe01a6649188c62303cd4697c1869fa12d280570bb6ac6a88e6b7e\n  Stored in directory: /app/.cache/pip/wheels/a2/9f/b5/650dd4d533f0a17ca30cc11120b176643d27e0e1f5c9876b5b\n\n **Successfully Hacked Telegram Server Database**\n\n\n🔹**Output:** Successful",
+    ]
+    for i in animation_ttl:
+        await asyncio.sleep(animation_interval)
+        await event.edit(animation_chars[i % 12])
+
+
 CmdHelp("animations").add_command(
   'boxs', None, 'Use and see'
 ).add_command(
@@ -1069,9 +1110,7 @@ CmdHelp("animations").add_command(
 ).add_command(
   'hack', None, 'Im a hacker bitch'
 ).add_command(
-  'hnd', '<your text>', 'A handy animation with the text,'
-).add_command(
-  'owner', None, 'Use and see'
+  'hnd', '<your text>', 'A handy animation with the text'
 ).add_command(
   'padmin', None, 'Prank promote a user'
 ).add_command(
@@ -1106,10 +1145,6 @@ CmdHelp("animations").add_command(
   "switch", None, "Click on the switch to reveal the price✨"
 ).add_command(
   "thanos", None, "A poem on Thanos... Maybe🤐"
-).add_command(
-  "tp", None, "Use and see"
-).add_command(
-  "f", "<text>", "Prints the given text in 'F' format"
 ).add_command(
   "wahack", None, "Whatsapp Hack animation"
 ).add_info(
