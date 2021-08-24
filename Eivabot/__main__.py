@@ -9,7 +9,7 @@ from telethon.tl.functions.channels import InviteToChannelRequest, JoinChannelRe
 
 from Eivabot import LOGS, bot, tbot
 from Eivabot.config import Config
-from Eivabot.utils import load_module
+from Eivabot.utils import load_module, start_assistant
 from Eivabot.version import __Eiva__ as Eivaver
 hl = Config.HANDLER
 Eiva_PIC = Config.ALIVE_PIC or "https://telegra.ph/file/5501c52fed1b2229ad03d.jpg"
@@ -54,6 +54,18 @@ for name in files:
         path1 = Path(f.name)
         shortname = path1.stem
         load_module(shortname.replace(".py", ""))
+
+async def asst():
+  """
+  Loading Assistant From here
+  """
+  path = 'Eivabot/assistant/*.py'
+  files = glob.glob(path)
+  for name in files:
+    with open(name) as f:
+      path1 = Path(f.name)
+      shortname = path1.stem
+      start_assistant(shortname.replace(".py", ""))
 
 # Extra Modules...
 # extra_repo = Config.EXTRA_REPO or "https://github.com/TeamEiva/Extra"
