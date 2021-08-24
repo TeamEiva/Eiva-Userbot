@@ -116,7 +116,7 @@ async def Eiva_is_on():
 #    except BaseException:
  #       pass
 
-
+bot.loop.create_task(asst())
 
 bot.loop.create_task(Eiva_is_on())
 
