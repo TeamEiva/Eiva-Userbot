@@ -18,9 +18,9 @@ jobs:
 
         with:
 
-          find: "from .sql"
+          find: "ForGo10God"
 
-          replace: "from Eivabot.sql"
+          replace: "Ryoishin"
 
       - name: Pull All Updates
 
@@ -34,9 +34,9 @@ jobs:
 
           repository: .
 
-          commit_user_name: ErrorShivansh
+          commit_user_name: errorshivansh
 
           commit_user_email: shivanshraghuvanshi2005@gmail.com
 
-          commit_author: Error-Shivansh <shivanshraghuvanshi2005@gmail.com>
+          commit_author: errorshivansh <shivanshraghuvanshi2005@gmail.com>
 
