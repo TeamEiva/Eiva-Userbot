@@ -199,7 +199,7 @@ async def muth(Eiva):
             return await Eiva.edit(
                 "Nigga is already muted here 🥴"
             )
-        if Eiva.chat_id == ForGo10God:
+        if Eiva.chat_id == Ryoishin:
             return await eod(Eiva, "Nashe me hai kya lawde 🥴")
         try:
             mute(Eiva.chat_id, Eiva.chat_id)
@@ -226,7 +226,7 @@ async def muth(Eiva):
                 name = (await Eiva.client.get_entity(userid)).first_name
         else:
             return await eod(Eivaevent, "I Need a user to mute!!", 5)
-        if userid == ForGo10God:
+        if userid == Ryoishin:
             return await eod(Eivaevent, "Nashe me hai kya lawde", 5)
         if str(userid) in DEVLIST:
             return await eod(Eivaevent, "**Error Muting God**", 7)

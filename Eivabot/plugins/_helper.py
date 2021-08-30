@@ -22,7 +22,7 @@ async def repo(event):
     try:
         Eiva = await bot.inline_query(botname, "repo")
         await Eiva[0].click(event.chat_id)
-        if event.sender_id == ForGo10God:
+        if event.sender_id == Ryoishin:
             await event.delete()
     except (noin, dedbot):
         await eor(event, msg)

@@ -9,8 +9,8 @@ from telethon import version
 
 
 Eiva_USER = bot.me.first_name
-ForGo10God = bot.uid
-Eiva_mention = f"[{Eiva_USER}](tg://user?id={ForGo10God})"
+Ryoishin = bot.uid
+Eiva_mention = f"[{Eiva_USER}](tg://user?id={Ryoishin})"
 Eiva_logo = "./Eivabot/resources/pics/Eivabot_logo.jpg"
 cjb = "./Eivabot/resources/pics/cjb.jpg"
 restlo = "./Eivabot/resources/pics/rest.jpeg"
