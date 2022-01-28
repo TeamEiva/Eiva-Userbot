@@ -18,9 +18,9 @@ jobs:
 
         with:
 
-          find: "ForGo10God"
+          find: "Eiva"
 
-          replace: "Ryoishin"
+          replace: "Eivaa"
 
       - name: Pull All Updates
 
