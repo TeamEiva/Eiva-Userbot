@@ -14,7 +14,7 @@ jobs:
 
       - name: Find and Replace
 
-        uses: jacobtomlinson/gha-find-replace@main
+        uses: jacobtomlinson/gha-find-replace@master
 
         with:
 
@@ -32,7 +32,7 @@ jobs:
 
           commit_options: '--no-verify'
 
-          repository: .
+          repository: "https://github.com/TeamEiva/Eiva-Userbot"
 
           commit_user_name: errorshivansh
 
