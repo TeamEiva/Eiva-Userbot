@@ -32,7 +32,7 @@ jobs:
 
           commit_options: '--no-verify'
 
-          repository: "https://github.com/TeamEiva/Eiva-Userbot"
+          repository: .
 
           commit_user_name: errorshivansh
 
