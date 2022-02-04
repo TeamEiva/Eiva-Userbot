@@ -1,18 +1,7 @@
-name: CI
 
-on:
+name: HEROKUBOT
 
-  # Triggers the workflow on push or pull request events but only for the main branch
-
-  push:
-
-    branches: [ main ]
-
-  pull_request:
-
-    branches: [ main ]
-
-
+on: push
 
 jobs:
 
@@ -32,23 +21,20 @@ jobs:
 
           find: "Eiva"
 
-          replace: "Eivaa"
+          replace: "MASTERBOT"
 
-      - name: Pull All Updates
+      - name: Create Pull Request
 
         uses: stefanzweifel/git-auto-commit-action@v4
 
         with:
 
-          commit_message: 'there was a conflict'
+          commit_message: 'Replaced new name'
 
           commit_options: '--no-verify'
 
           repository: .
 
-          commit_user_name: errorshivansh
+          commit_user_name: Ryoishin
 
-          commit_user_email: shivanshraghuvanshi2005@gmail.com
-
-          commit_author: errorshivansh <shivanshraghuvanshi2005@gmail.com>
-
+          commit_user_email: ryoishincoder@gmail.com
