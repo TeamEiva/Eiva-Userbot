@@ -24,10 +24,8 @@ class Config((object)):
     API_HASH = os.environ.get("API_HASH", None)
     APP_ID = os.environ.get("APP_ID", None)
     AUTH_TOKEN_DATA = os.environ.get("AUTH_TOKEN_DATA", None)
-    if AUTH_TOKEN_DATA != None:
-        os.makedirs(TMP_DOWNLOAD_DIRECTORY)
-        with open(TMP_DOWNLOAD_DIRECTORY+"auth_token.txt","w") as t_file:
-            t_file.write(AUTH_TOKEN_DATA)
+    # Do not write credentials during import. Consumers should use this value
+    # directly or persist it in a private, explicitly configured location.
     BIO_MSG = os.environ.get("BIO_MSG", "ㄥ乇Ꮆ乇几ᗪ卂尺ㄚ 卂千 乇丨ᐯ卂乃ㄖㄒ")
     BL_CHAT = {int(x) for x in os.environ.get("BL_CHAT", "").split()}
     BOT_HANDLER = os.environ.get("BOT_HANDLER", "\/")

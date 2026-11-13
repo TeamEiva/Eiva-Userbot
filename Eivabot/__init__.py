@@ -2,7 +2,6 @@ import os
 import sys
 import time
 import datetime
-from distutils.util import strtobool as sb
 from logging import DEBUG, INFO, basicConfig, getLogger
 
 import heroku3
@@ -11,11 +10,13 @@ from requests import get
 from telethon import TelegramClient
 from telethon.sessions import StringSession
 
+load_dotenv()
+
 from Eivabot.config import Config
 
 StartTime = datetime.datetime.now()
 
-CONSOLE_LOGGER_VERBOSE = sb(os.environ.get("CONSOLE_LOGGER_VERBOSE", "False"))
+CONSOLE_LOGGER_VERBOSE = os.environ.get("CONSOLE_LOGGER_VERBOSE", "false").strip().lower() in {"1", "true", "yes", "on"}
 
 if CONSOLE_LOGGER_VERBOSE:
     basicConfig(
@@ -42,22 +43,19 @@ except Exception:
 if Config.EivaBOT_SESSION:
     session_name = str(Config.EivaBOT_SESSION)
     try:
-        if session_name.endswith("="):
-            bot = TelegramClient(
-                StringSession(session_name), Config.APP_ID, Config.API_HASH
-            )
-        else:
-            bot = TelegramClient(
-                "BOT_TOKEN", api_id=Config.APP_ID, api_hash=Config.API_HASH
-            ).start(bot_token=Config.EivaBOT_SESSION)
-    except Exception as e:
-        LOGS.warn(f"EivaBOT_SESSION - {str(e)}")
+        bot = TelegramClient(
+            StringSession(session_name),
+            int(Config.APP_ID or 1),
+            Config.API_HASH or "0" * 32,
+        )
+    except Exception:
+        LOGS.error("EivaBOT_SESSION could not be initialized; verify the session and API credentials")
         sys.exit()
 else:
     session_name = "startup"
-    bot = TelegramClient(session_name, Config.APP_ID, Config.API_HASH)
+    bot = TelegramClient(session_name, int(Config.APP_ID or 1), Config.API_HASH or "0" * 32)
 
-tbot = TelegramClient('Eivabot', api_id=Config.APP_ID, api_hash=Config.API_HASH).start(bot_token=Config.BOT_TOKEN)
+tbot = TelegramClient('Eivabot', api_id=int(Config.APP_ID or 1), api_hash=Config.API_HASH or "0" * 32)
 
 
 # global variables

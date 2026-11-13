@@ -1,5 +1,5 @@
 import asyncio
-from time import sleep
+import logging
 
 from telethon.tl import functions
 from telethon.tl.types import (
@@ -14,11 +14,13 @@ from telethon.tl.types import (
     UserStatusRecently,
 )
 
-from telethon.errors import ChatAdminRequiredError, UserAdminInvalidError
+from telethon.errors import ChatAdminRequiredError, UserAdminInvalidError, FloodWaitError
 from telethon.tl import functions
 from telethon.tl.functions.channels import EditBannedRequest
 
 from . import *
+
+logger = logging.getLogger(__name__)
 
 
 BANNED_RIGHTS = ChatBannedRights(
@@ -39,7 +41,8 @@ async def _(event):
     result = await event.client(
         functions.channels.GetParticipantRequest(event.chat_id, event.client.uid)
     )
-    if not result.participant.admin_rights.ban_users:
+    rights = getattr(result.participant, "admin_rights", None)
+    if not rights or not rights.ban_users:
         return await eod(
             event, "No immunity for this action!!"
         )
@@ -58,15 +61,16 @@ async def _(event):
                 success += 1
                 await asyncio.sleep(0.5)
         except Exception as e:
-            LOGS.info(str(e))
+            logger.warning("Could not kick participant %s: %s", user.id, e)
             await asyncio.sleep(0.5)
     await Eiva.edit(
         "**Bleck Magik Done...**"
     )
-    await bot.send_message(
-        Config.LOGGER_ID,
-        f"#KICKALL \n\nKicked Out  `{success}`  of  `{total}`  members"
-    )
+    if Config.LOGGER_ID:
+        await bot.send_message(
+            Config.LOGGER_ID,
+            f"#KICKALL \n\nKicked Out  `{success}`  of  `{total}`  members"
+        )
 
 
 @bot.on(Eiva_cmd(pattern=r"banall ?(.*)"))
@@ -75,7 +79,8 @@ async def _(event):
     result = await event.client(
         functions.channels.GetParticipantRequest(event.chat_id, event.client.uid)
     )
-    if not result:
+    rights = getattr(result.participant, "admin_rights", None)
+    if not rights or not rights.ban_users:
         return await eod(
             event, "Immunity Low!!"
         )
@@ -96,15 +101,16 @@ async def _(event):
                 success += 1
                 await asyncio.sleep(0.5)
         except Exception as e:
-            LOGS.info(str(e))
+            logger.warning("Could not ban participant %s: %s", user.id, e)
             await asyncio.sleep(0.5)
     await Eiva.edit(
         "**Bleck Magik Completed...**"
     )
-    await bot.send_message(
-        Config.LOGGER_ID,
-        f"#BANALL \n\nSucessfully banned  `{success}`  out of  `{total}`  members!!",
-    )
+    if Config.LOGGER_ID:
+        await bot.send_message(
+            Config.LOGGER_ID,
+            f"#BANALL \n\nSuccessfully banned  `{success}`  out of  `{total}`  members!!",
+        )
     
 
 @bot.on(Eiva_cmd(pattern=r"unbanall ?(.*)"))
@@ -114,28 +120,40 @@ async def _(event):
         return
     input_str = event.pattern_match.group(1)
     if input_str:
-        logger.info("TODO: Not yet Implemented")
-    else:
-        if event.is_private:
-            return False
-        await edit_or_reply(event, "Searching Participant Lists.")
-        p = 0
-        async for i in bot.iter_participants(
-            event.chat_id, filter=ChannelParticipantsKicked, aggressive=True
-        ):
-            rights = ChatBannedRights(until_date=0, view_messages=False)
-            try:
-                await bot(
-                    functions.channels.EditBannedRequest(event.chat_id, i, rights)
+        try:
+            user = await event.client.get_entity(input_str.strip())
+            await event.client(
+                EditBannedRequest(
+                    event.chat_id,
+                    user,
+                    ChatBannedRights(until_date=None, view_messages=False),
                 )
-            except FloodWaitError as ex:
-                logger.warn("sleeping for {} seconds".format(ex.seconds))
-                sleep(ex.seconds)
-            except Exception as ex:
-                await edit_or_reply(event, str(ex))
-            else:
-                p += 1
-        await edit_or_reply(event, "{}: {} unbanned".format(event.chat_id, p))
+            )
+        except Exception as exc:
+            return await edit_or_reply(event, f"Could not unban `{input_str}`: {exc}")
+        return await edit_or_reply(event, f"Unbanned `{user.id}`.")
+
+    if event.is_private:
+        return await edit_or_reply(event, "Use this command in a group or channel.")
+    chat = await event.get_chat()
+    if not (chat.creator or (chat.admin_rights and chat.admin_rights.ban_users)):
+        return await edit_or_reply(event, "I need ban rights to unban participants.")
+    status = await edit_or_reply(event, "Searching the banned participant list...")
+    count = 0
+    async for user in event.client.iter_participants(
+        event.chat_id, filter=ChannelParticipantsKicked, aggressive=True
+    ):
+        rights = ChatBannedRights(until_date=None, view_messages=False)
+        try:
+            await event.client(EditBannedRequest(event.chat_id, user, rights))
+            count += 1
+        except FloodWaitError as exc:
+            await asyncio.sleep(exc.seconds)
+            await event.client(EditBannedRequest(event.chat_id, user, rights))
+            count += 1
+        except Exception as exc:
+            logger.warning("Could not unban participant %s: %s", user.id, exc)
+    await edit_or_reply(status, f"Unbanned {count} participant(s).")
 
 
 @bot.on(Eiva_cmd(pattern="ikuck ?(.*)"))

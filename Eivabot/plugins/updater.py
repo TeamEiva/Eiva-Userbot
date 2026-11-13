@@ -2,7 +2,6 @@ import asyncio
 import os
 import sys
 import heroku3
-import urllib3
 from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
 
@@ -12,7 +11,6 @@ from . import *
 
 HEROKU_APP_NAME = Config.HEROKU_APP_NAME or None
 HEROKU_API_KEY = Config.HEROKU_API_KEY or None
-Heroku = heroku3.from_key(Config.HEROKU_API_KEY)
 heroku_api = "https://api.heroku.com"
 
 UPSTREAM_REPO_BRANCH = "main"
@@ -31,8 +29,6 @@ IS_SELECTED_DIFFERENT_BRANCH = (
     "please check out to an official branch, and re-start the updater."
 )
 
-
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 requirements_path = os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "requirements.txt"
@@ -74,8 +70,8 @@ async def print_changelogs(event, ac_br, changelog):
 async def update_requirements():
     reqs = str(requirements_path)
     try:
-        process = await asyncio.create_subprocess_sEiva(
-            " ".join([sys.executable, "-m", "pip", "install", "-r", reqs]),
+        process = await asyncio.create_subprocess_exec(
+            sys.executable, "-m", "pip", "install", "-r", reqs,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )
@@ -90,12 +86,15 @@ async def update(event, repo, ups_rem, ac_br):
         ups_rem.pull(ac_br)
     except GitCommandError:
         repo.git.reset("--hard", "FETCH_HEAD")
-    await update_requirements()
+    install_status = await update_requirements()
+    if install_status != 0:
+        await event.edit(f"Dependency update failed ({install_status}); the process was not restarted.")
+        return
     await event.edit(
         "✅ Successfully updated !𝗘𝗜𝗩𝗔𝗕𝗢𝗧\n\nBot is restarting please wait for a minute."
     )
     args = [sys.executable, "-m", "Eivabot"]
-    os.execle(sys.executable, *args, os.environ)
+    os.execvpe(sys.executable, args, os.environ.copy())
     return
 
 

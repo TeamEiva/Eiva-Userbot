@@ -33,65 +33,62 @@ elif os.path.exists("Config.py"):
 # load plugins
 def load_module(shortname):
     if shortname.startswith("__"):
-        pass
-    elif shortname.endswith("_"):
-        import Eivabot.utils
+        return
 
-        path = Path(f"Eivabot/plugins/{shortname}.py")
-        name = "Eivabot.plugins.{}".format(shortname)
-        spec = importlib.util.spec_from_file_location(name, path)
-        mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(mod)
-        LOGS.info("EivaBot - Successfully imported " + shortname)
-    else:
-        import Eivabot.utils
+    import Eivabot.utils
 
-        path = Path(f"Eivabot/plugins/{shortname}.py")
-        name = "Eivabot.plugins.{}".format(shortname)
-        spec = importlib.util.spec_from_file_location(name, path)
-        mod = importlib.util.module_from_spec(spec)
-        mod.bot = bot
-        mod.tgbot = bot.tgbot
-        mod.command = command
-        mod.logger = logging.getLogger(shortname)
-        # support for uniborg
-        sys.modules["uniborg.util"] = Eivabot.utils
-        mod.Config = Config
-        mod.borg = bot
-        mod.Eivabot = bot
-        mod.edit_or_reply = edit_or_reply
-        mod.eor = edit_or_reply
-        mod.delete_Eiva = delete_Eiva
-        mod.eod = delete_Eiva
-        mod.Var = Config
-        mod.admin_cmd = Eiva_cmd
-        # support for other userbots
-        sys.modules["userbot.utils"] = Eivabot.utils
-        sys.modules["userbot"] = Eivabot
-        # support for paperplaneextended
-        sys.modules["userbot.events"] = Eivabot
+    path = Path(f"Eivabot/plugins/{shortname}.py")
+    name = f"Eivabot.plugins.{shortname}"
+    spec = importlib.util.spec_from_file_location(name, path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Cannot create an import spec for plugin {shortname}")
+    mod = importlib.util.module_from_spec(spec)
+    mod.bot = bot
+    mod.tgbot = bot.tgbot
+    mod.command = command
+    mod.logger = logging.getLogger(shortname)
+    mod.Config = Config
+    mod.borg = bot
+    mod.Eivabot = bot
+    mod.edit_or_reply = edit_or_reply
+    mod.eor = edit_or_reply
+    mod.delete_Eiva = delete_Eiva
+    mod.eod = delete_Eiva
+    mod.Var = Config
+    mod.admin_cmd = Eiva_cmd
+
+    # Compatibility aliases used by older plugins.
+    sys.modules["uniborg.util"] = Eivabot.utils
+    sys.modules["userbot.utils"] = Eivabot.utils
+    sys.modules["userbot"] = Eivabot
+    sys.modules["userbot.events"] = Eivabot
+    sys.modules[name] = mod
+    try:
         spec.loader.exec_module(mod)
-        # for imports
-        sys.modules["Eivabot.plugins." + shortname] = mod
-        LOGS.info("⚡ ΣIVΛBθƬ⚡ - Successfully Imported " + shortname)
+    except Exception:
+        sys.modules.pop(name, None)
+        for index in reversed(range(len(bot._event_builders))):
+            _, callback = bot._event_builders[index]
+            if getattr(callback, "__module__", None) == name:
+                del bot._event_builders[index]
+        raise
+    LOGS.info("Successfully imported plugin %s", shortname)
 
 
 # remove plugins
 def remove_plugin(shortname):
-    try:
-        try:
-            for i in LOAD_PLUG[shortname]:
-                bot.remove_event_handler(i)
-            del LOAD_PLUG[shortname]
-
-        except BaseException:
-            name = f"Eivabot.plugins.{shortname}"
-
-            for i in reversed(range(len(bot._event_builders))):
-                ev, cb = bot._event_builders[i]
-                if cb.__module__ == name:
-                    del bot._event_builders[i]
-    except BaseException:
-        raise ValueError
+    name = f"Eivabot.plugins.{shortname}"
+    removed = False
+    for client in (bot, getattr(bot, "tgbot", None)):
+        if client is None:
+            continue
+        for index in reversed(range(len(client._event_builders))):
+            _, callback = client._event_builders[index]
+            if getattr(callback, "__module__", None) == name:
+                del client._event_builders[index]
+                removed = True
+    LOAD_PLUG.pop(shortname, None)
+    sys.modules.pop(name, None)
+    return removed
 
 # Eivabot

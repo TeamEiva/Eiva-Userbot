@@ -4,7 +4,7 @@ from telethon.tl.functions.users import GetFullUserRequest
 
 from . import *
 
-Heroku = heroku3.from_key(Config.HEROKU_API_KEY)
+Heroku = heroku3.from_key(Config.HEROKU_API_KEY) if Config.HEROKU_API_KEY else None
 heroku_api = "https://api.heroku.com"
 sudousers = os.environ.get("SUDO_USERS", None)
 
@@ -23,7 +23,7 @@ async def sudo(event):
 async def add(event):
     ok = await eor(event, "**🚀 Adding Sudo User...**")
     bot = "SUDO_USERS"
-    if Config.HEROKU_APP_NAME is not None:
+    if Heroku and Config.HEROKU_APP_NAME:
         app = Heroku.app(Config.HEROKU_APP_NAME)
     else:
         await eod(ok, "**Please Set-Up**  `HEROKU_APP_NAME` **to add sudo users!!**")
@@ -35,6 +35,7 @@ async def add(event):
         target = await get_user(event)
     except Exception:
         await eod(ok, f"Reply to a user to add them in sudo.")
+        return
     newsudo = f"{sudousers} {target}" if sudousers else f"{target}"
     await ok.edit(f"✅** Added**  `{target}`  **in Sudo User.**\n\n __Restarting Heroku to Apply Changes. Wait for a minute.__")
     heroku_Config[bot] = newsudo
@@ -42,7 +43,7 @@ async def add(event):
 @bot.on(Eiva_cmd(pattern="rmsudo(?: |$)"))
 async def _(event):
     ok = await eor(event, "**🚫 Removing Sudo User...**")
-    if Config.HEROKU_APP_NAME is not None:
+    if Heroku and Config.HEROKU_APP_NAME:
         app = Heroku.app(Config.HEROKU_APP_NAME)
     else:
         await eod(ok, "**Please Set-Up**  HEROKU_APP_NAME to remove sudo users!!")
@@ -55,7 +56,8 @@ async def _(event):
         gett = str(target)
     except Exception:
         await eod(ok, f"Reply to a user to remove them from sudo.")
-    if gett in sudousers:
+        return
+    if gett in (sudousers or ""):
         newsudo = sudousers.replace(gett, "")
         await ok.edit(f"❌** Removed**  `{target}`  from Sudo User.\n\n Restarting Heroku to Apply Changes. Wait for a minute.")
         bot = "SUDO_USERS"
@@ -64,16 +66,18 @@ async def _(event):
         await ok.edit("**😑This user is not in your Sudo Users List.**")
 
 async def get_user(event):
+    if not event.reply_to_msg_id:
+        raise ValueError("Reply to a user to select them")
     if event.reply_to_msg_id:
         previous_message = await event.get_reply_message()
-        if previous_message.forward:
-            replied_user = await event.client(
-                GetFullUserRequest(previous_message.forward.sender_id)
-            )
-        else:
-            replied_user = await event.client(
-                GetFullUserRequest(previous_message.sender_id)
-            )
+        user_id = (
+            previous_message.forward.sender_id
+            if previous_message and previous_message.forward
+            else previous_message.sender_id if previous_message else None
+        )
+        if user_id is None:
+            raise ValueError("Could not identify the replied user")
+        replied_user = await event.client(GetFullUserRequest(user_id))
     return replied_user.user.id
 
 

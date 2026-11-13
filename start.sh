@@ -18,4 +18,4 @@ echo """
 
 """
 
-python3 -m Eivabot
+exec python -m Eivabot

@@ -3,16 +3,11 @@ import math
 import os
 import heroku3
 import requests
-import urllib3
 import sys
-from os import execl
-from time import sleep
 
 from . import *
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-Heroku = heroku3.from_key(Config.HEROKU_API_KEY)
+Heroku = heroku3.from_key(Config.HEROKU_API_KEY) if Config.HEROKU_API_KEY else None
 heroku_api = "https://api.heroku.com"
 HEROKU_APP_NAME = Config.HEROKU_APP_NAME
 HEROKU_API_KEY = Config.HEROKU_API_KEY
@@ -21,10 +16,10 @@ lg_id = Config.LOGGER_ID
 
 
 async def restart(event):
-    if HEROKU_APP_NAME and HEROKU_API_KEY:
+    if HEROKU_APP_NAME and HEROKU_API_KEY and Heroku:
         try:
             Heroku
-        except BaseException:
+        except Exception:
             return await eor(
                 event, "`HEROKU_API_KEY` is wrong. Re-Check in config vars."
             )
@@ -32,7 +27,7 @@ async def restart(event):
         app = Heroku.apps()[HEROKU_APP_NAME]
         app.restart()
     else:
-        execl(executable, executable, "bash", "EivaBot")
+        os.execvpe(sys.executable, [sys.executable, "-m", "Eivabot"], os.environ.copy())
 
 
 @bot.on(Eiva_cmd(pattern="restart$"))
@@ -44,7 +39,8 @@ async def re(Eiva):
     if HEROKU_API_KEY:
         await restart(event)
     else:
-        await event.edit("Please Set Your `HEROKU_API_KEY` to restart ΣIVΛBθƬ")
+        await event.edit("Restarting EivaBot...")
+        os.execvpe(sys.executable, [sys.executable, "-m", "Eivabot"], os.environ.copy())
 
 
 @bot.on(Eiva_cmd(pattern="shutdown$"))
@@ -66,7 +62,7 @@ async def down(Eiva):
 async def variable(Eiva):
     if Eiva.fwd_from:
         return
-    if Config.HEROKU_APP_NAME is not None:
+    if Heroku and Config.HEROKU_APP_NAME:
         app = Heroku.app(Config.HEROKU_APP_NAME)
     else:
         return await eor(Eiva, "`[HEROKU]:" "\nPlease setup your` **HEROKU_APP_NAME**")
@@ -80,13 +76,7 @@ async def variable(Eiva):
         try:
             variable = Eiva.pattern_match.group(2).split()[0]
             if variable in ("EivaBOT_SESSION", "BOT_TOKEN", "HEROKU_API_KEY"):
-                if Config.ABUSE == "ON":
-                    await bot.send_file(Eiva.chat_id, cjb, caption=cap)
-                    await event.delete()
-                else:
-                    await event.edit(f"**{capn}**")
-                await bot.send_message(lg_id, f"#HEROKU_VAR \n\n`{heroku_var[variable]}`")
-                return
+                return await event.edit("Sensitive configuration values are hidden.")
             if variable in heroku_var:
                 return await event.edit(
                     "**Heroku Var** :" f"\n\n`{variable}` = `{heroku_var[variable]}`\n"
@@ -159,12 +149,14 @@ async def dyno_usage(Eiva):
     if Eiva.fwd_from:
         return
     event = await edit_or_reply(Eiva, "`Processing...`")
+    if not Heroku or not HEROKU_API_KEY:
+        return await event.edit("Configure HEROKU_API_KEY to use this command.")
     useragent = (
         "Mozilla/5.0 (Linux; Android 10; SM-G975F) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/80.0.3987.149 Mobile Safari/537.36"
     )
-    user_id = Heroku.account().id
+    user_id = str(Heroku.account().id)
     headers = {
         "User-Agent": useragent,
         "Authorization": f"Bearer {Config.HEROKU_API_KEY}",

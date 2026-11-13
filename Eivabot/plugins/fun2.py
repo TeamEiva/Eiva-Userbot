@@ -225,7 +225,7 @@ async def pressf(f):
         for line in F_LENGTHS:
             c = max(round(line / len(arg)), 1)
             out += (arg * c) + "\n"
-        await eor(f"`" + out + "`")
+        await eor(f, f"`{out}`")
 
 
 @bot.on(Eiva_cmd(pattern="session$", outgoing=True))

@@ -14,7 +14,7 @@ from . import *
 async def leave(e):
     if not e.text[0].isalpha() and e.text[0] not in ("/", "#", "@", "!"):
         await e.edit("😪 **KThnxBye** See u all in Eiva!!")
-        time.sleep(1)
+        await asyncio.sleep(1)
         if "-" in str(e.chat_id):
             await bot(LeaveChannelRequest(e.chat_id))
         else:
@@ -37,7 +37,7 @@ async def _(event):
     result = await borg(functions.help.GetConfigRequest())
     result = result.stringify()
     logger.info(result)
-    await eor("Config Saved In You Heroku Logs.")
+    await eor(event, "Config saved in the application logs.")
 
 
 @bot.on(Eiva_cmd(pattern="schd ?(.*)", outgoing=True))
@@ -51,11 +51,16 @@ async def _(event):
     if input_str:
         await event.delete()
         if "-" in input_str:
-            ttl, message = input_str.split("-")
+            ttl, message = input_str.split("-", 1)
+            ttl = int(ttl.strip())
+            message = message.strip()
         elif event.reply_to_msg_id:
-            await event.delete()
             ttl = int(input_str)
             message = await event.get_reply_message()
+        else:
+            return await eor(event, message)
+        if ttl < 0 or ttl > 86400:
+            return await eor(event, "Delay must be between 0 and 86400 seconds.")
         await asyncio.sleep(int(ttl))
         await event.respond(message)
     else:
@@ -73,8 +78,10 @@ async def _(event):
         chat_id = await get_user_id(c[0])
     except Exception as e:
         return await eod(event, f"`{e}`")
-    hunter = await event.get_reply_message()
+    hunter = await event.get_reply_message() if event.reply_to_msg_id else None
     if event.reply_to_msg_id:
+        if hunter is None:
+            return await eod(event, "The replied message could not be found.")
         await bot.send_message(chat_id, hunter)
         await eod(event, "**[Done]**")
     msg = "".join(i + " " for i in c[1:])
@@ -83,8 +90,8 @@ async def _(event):
     try:
         await bot.send_message(chat_id, msg)
         await eod(event, "**[Done]**")
-    except BaseException:
-        await eod(f"**Invalid Syntax !!**\n\n`{hl}dm <Username or UserID> <message>`")
+    except Exception:
+        await eod(event, f"**Invalid Syntax !!**\n\n`{hl}dm <Username or UserID> <message>`")
     
 
 CmdHelp("bot").add_command(

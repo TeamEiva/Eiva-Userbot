@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+*.session
+*.session-journal
+eiva.db
+DOWNLOADS/
+SAVED/
+.git/
+.venv/
+__pycache__/
+*.py[cod]
