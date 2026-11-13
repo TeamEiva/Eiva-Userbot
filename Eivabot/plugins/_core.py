@@ -18,14 +18,8 @@ async def kk(event):
     reply_to_id = event.message.id
     if event.reply_to_msg_id:
         reply_to_id = event.reply_to_msg_id
-    cmd = "ls Eivabot/plugins"
-    process = await asyncio.create_subprocess_sEiva(
-        cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-    )
-    stdout, stderr = await process.communicate()
-    o = stdout.decode()
-    _o = o.split("\n")
-    o = "\n".join(_o)
+    plugin_dir = Path("Eivabot/plugins")
+    o = "\n".join(sorted(path.name for path in plugin_dir.glob("*.py")))
     OUTPUT = f"List of Plugins in bot :- \n\n{o}\n\n<><><><><><><><><><><><><><><><><><><><><><><><>\nHELP:- If you want to know the commands for a plugin, do :- \n.plinfo <plugin name> without the < > brackets. \nJoin {Eiva_grp} for help."
     if len(OUTPUT) > 69:
         thumb = Eiva_logo
@@ -78,6 +72,7 @@ async def install(event):
     await event.edit(a)
     if event.fwd_from:
         return
+    downloaded_file_name = None
     if event.reply_to_msg_id:
         try:
             downloaded_file_name = await event.client.download_media(  # pylint:disable=E0602
@@ -107,7 +102,9 @@ async def install(event):
                 return await eod(event, f"**Failed to Install** \n`Error`\nModule already installed or unknown format")
         except Exception as e: 
             await eod(event, f"**Failed to Install** \n`Error`\n{str(e)}")
-            return os.remove(downloaded_file_name)
+            if downloaded_file_name and os.path.isfile(downloaded_file_name):
+                os.remove(downloaded_file_name)
+            return
 
 @bot.on(Eiva_cmd(pattern=r"uninstall (?P<shortname>\w+)", outgoing=True))
 @bot.on(sudo_cmd(pattern=r"uninstall (?P<shortname>\w+)", allow_sudo=True))
@@ -134,11 +131,7 @@ async def unload(event):
         remove_plugin(shortname)
         await event.edit(f"Successfully unloaded `{shortname}`")
     except Exception as e:
-        await event.edit(
-            "Successfully unloaded {shortname}\n{}".format(
-                shortname, str(e)
-            )
-        )
+        await event.edit(f"Could not unload `{shortname}`: {e}")
 
 
 @bot.on(Eiva_cmd(pattern=r"load (?P<shortname>\w+)$"))
@@ -150,7 +143,7 @@ async def load(event):
     try:
         try:
             remove_plugin(shortname)
-        except BaseException:
+        except Exception:
             pass
         load_module(shortname)
         await event.edit(f"Successfully loaded `{shortname}`")

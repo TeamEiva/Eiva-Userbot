@@ -211,4 +211,4 @@ async def starkisnoob(event):
         await event.reply("DisBlacklisted This Dumb Person")
         await tgbot.send_message(
             user_id, "Congo! You Have Been Unblacklisted By My Master."
-        )p
+        )

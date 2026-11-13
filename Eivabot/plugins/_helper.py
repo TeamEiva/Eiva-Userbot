@@ -35,17 +35,21 @@ async def yardim(event):
         return
     tgbotusername = Config.BOT_USERNAME
     input_str = event.pattern_match.group(1)
-    try:
-        if input_str != "" and input_str in CMD_HELP:
-            await eor(event, str(CMD_HELP[args]))
-    except:
-        pass
+    if input_str:
+        if input_str in CMD_HELP:
+            return await eor(event, str(CMD_HELP[input_str]))
+        return await eor(event, f"No help entry found for `{input_str}`.")
     if tgbotusername is not None:
-        results = await event.client.inline_query(tgbotusername, "Eivabot_help")
-        await results[0].click(
-            event.chat_id, reply_to=event.reply_to_msg_id, hide_via=True
-        )
-        await event.delete()
+        try:
+            results = await event.client.inline_query(tgbotusername, "Eivabot_help")
+            if not results:
+                return await eor(event, "The inline help bot returned no results.")
+            await results[0].click(
+                event.chat_id, reply_to=event.reply_to_msg_id, hide_via=True
+            )
+            await event.delete()
+        except Exception as exc:
+            await eor(event, f"Could not open inline help: `{exc}`")
     else:
         await eor(event, "**⚠️ ERROR !!** \nPlease Re-Check BOT_TOKEN & BOT_USERNAME on Heroku.")
 

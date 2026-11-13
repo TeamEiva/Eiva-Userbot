@@ -7,16 +7,18 @@ from Eivabot.config import Config
 
 
 def start() -> scoped_session:
-    engine = create_engine(Config.DB_URI)
+    # Keep the built-in database features usable on a fresh local install.
+    # Operators can set DATABASE_URL to PostgreSQL for persistent deployments.
+    database_url = Config.DB_URI or "sqlite:///eiva.db"
+    engine = create_engine(database_url)
     BASE.metadata.bind = engine
     BASE.metadata.create_all(engine)
     return scoped_session(sessionmaker(bind=engine, autoflush=False))
 
 
+BASE = declarative_base()
 try:
-    BASE = declarative_base()
     SESSION = start()
-except AttributeError as e:
-    # this is a dirty way for the work-around required for #23
-    print("DB_URI is not configured. Features depending on the database might have issues.")
-    print(str(e))
+except Exception:
+    import logging
+    logging.getLogger(__name__).exception("Database initialization failed")

@@ -2,7 +2,6 @@ import asyncio
 import io
 import time
 import os
-import sys
 import traceback
 
 from . import *
@@ -18,7 +17,7 @@ async def _(event):
     if not cmd:
         return await eod(event, "`What should i execute?..`")
     Eivaevent = await eor(event, "`Executing.....`")
-    process = await asyncio.create_subprocess_sEiva(
+    process = await asyncio.create_subprocess_shell(
         cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
     )
     stdout, stderr = await process.communicate()
@@ -46,19 +45,13 @@ async def _(event):
     if not cmd:
         return await eod(event, "`What should i run ?..`")
     Eivaevent = await eor(event, "`Running ...`")
-    old_stderr = sys.stderr
-    old_stdout = sys.stdout
-    redirected_output = sys.stdout = io.StringIO()
-    redirected_error = sys.stderr = io.StringIO()
-    stdout, stderr, exc = None, None, None
     try:
-        await aexec(cmd, event)
+        stdout = await aexec(cmd, event)
+        stderr = ""
+        exc = None
     except Exception:
+        stdout = stderr = ""
         exc = traceback.format_exc()
-    stdout = redirected_output.getvalue()
-    stderr = redirected_error.getvalue()
-    sys.stdout = old_stdout
-    sys.stderr = old_stderr
     evaluation = ""
     if exc:
         evaluation = exc
@@ -77,16 +70,22 @@ async def _(event):
 
 
 async def aexec(code, smessatatus):
+    output = io.StringIO()
     message = event = smessatatus
     p = lambda _x: print(yaml_format(_x))
     reply = await event.get_reply_message()
+    namespace = globals().copy()
+    namespace.update({"message": message, "event": event, "reply": reply,
+                      "client": message.client, "p": p, "chat": message.chat_id,
+                      "print": lambda *args, **kwargs: __import__("builtins").print(
+                          *args, file=output, **kwargs)})
     exec(
         f"async def __aexec(message, event , reply, client, p, chat): "
-        + "".join(f"\n {l}" for l in code.split("\n"))
+        + "".join(f"\n {l}" for l in code.split("\n")),
+        namespace,
     )
-    return await locals()["__aexec"](
-        message, event, reply, message.client, p, message.chat_id
-    )
+    await namespace["__aexec"](message, event, reply, message.client, p, message.chat_id)
+    return output.getvalue()
 
 
 @bot.on(Eiva_cmd(pattern="bash ?(.*)", outgoing=True))
@@ -100,7 +99,7 @@ async def _(event):
     if event.reply_to_msg_id:
         reply_to_id = event.reply_to_msg_id
     time.time() + PROCESS_RUN_TIME
-    process = await asyncio.create_subprocess_sEiva(
+    process = await asyncio.create_subprocess_shell(
         cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
     )
     stdout, stderr = await process.communicate()

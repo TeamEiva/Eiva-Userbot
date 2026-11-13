@@ -23,15 +23,16 @@ async def delete_it(safai):
 @bot.on(sudo_cmd(pattern=r"purge", allow_sudo=True))
 @errors_handler
 async def fastpurger(purg):
+    if not purg.reply_to_msg_id:
+        return await edit_or_reply(purg, "Reply to the first message to purge from.")
     chat = await purg.get_input_chat()
     msgs = []
     count = 0
 
-    async for msg in purg.client.iter_messages(chat, min_id=purg.reply_to_msg_id):
-        msgs.append(msg)
+    async for msg in purg.client.iter_messages(chat, min_id=purg.reply_to_msg_id - 1):
+        msgs.append(msg.id)
         count += 1
-        msgs.append(purg.reply_to_msg_id)
-        if len(msgs) == 100:
+        if len(msgs) >= 100:
             await purg.client.delete_messages(chat, msgs)
             msgs = []
 
@@ -42,10 +43,8 @@ async def fastpurger(purg):
         "**Fast Purge Completed!** \nPurged `" + str(count) + "` messages.",
     )
 
-    await purg.client.send_message(
-        lg_id, 
-        "#PURGE\n\nPurged `" + str(count) + "` messages."
-        )
+    if lg_id:
+        await purg.client.send_message(lg_id, f"#PURGE\n\nPurged `{count}` messages.")
     await sleep(2)
     await done.delete()
 
@@ -55,11 +54,16 @@ async def fastpurger(purg):
 @errors_handler
 async def purgeme(delme):
     message = delme.text
-    count = int(message[9:])
-    i = 1
+    try:
+        count = int(message.split(maxsplit=1)[1])
+    except (IndexError, ValueError):
+        return await edit_or_reply(delme, "Usage: `purgeme <count>`")
+    if count < 1 or count > 1000:
+        return await edit_or_reply(delme, "Count must be between 1 and 1000.")
+    i = 0
 
     async for message in delme.client.iter_messages(delme.chat_id, from_user="me"):
-        if i > count + 1:
+        if i >= count + 1:
             break
         i += 1
         await message.delete()
@@ -68,9 +72,10 @@ async def purgeme(delme):
         delme.chat_id,
         "**Self Purge Complete!** Purged  `" + str(count) + "`  messages.",
     )
-    await delme.client.send_message(
-        lg_id, "#PURGE \nSelf Purged  `" + str(count) + "`  messages."
-    )
+    if lg_id:
+        await delme.client.send_message(
+            lg_id, "#PURGE \nSelf Purged  `" + str(count) + "`  messages."
+        )
     await sleep(2)
     i = 1
     await smsg.delete()
@@ -81,13 +86,19 @@ async def purgeme(delme):
 @errors_handler
 async def selfdestruct(destroy):
     message = destroy.text
-    counter = int(message[4:6])
-    text = str(destroy.text[6:])
+    try:
+        _, seconds, text = message.split(maxsplit=2)
+        counter = int(seconds)
+    except (ValueError, IndexError):
+        return await edit_or_reply(destroy, "Usage: `sd <seconds> <text>`")
+    if counter < 1 or counter > 86400:
+        return await edit_or_reply(destroy, "Delay must be between 1 and 86400 seconds.")
     await destroy.delete()
     smsg = await destroy.client.send_message(destroy.chat_id, text)
     await sleep(counter)
     await smsg.delete()
-    await destroy.client.send_message(lg_id, f"#SELF_DESTRUCT \n\nSelf Destruct message query done successfully!\n\n**SD Msg :**  `{text}`")
+    if lg_id:
+        await destroy.client.send_message(lg_id, "#SELF_DESTRUCT\n\nSelf-destruct message completed.")
         
 
 CmdHelp("purger").add_command(

@@ -1,283 +1,139 @@
-import asyncio
+"""Safe file management for the bot's work directories."""
 import io
-import os
-import time
-from telethon import events
+from pathlib import Path
+
 from . import *
 
-if not os.path.isdir("./SAVED"):
-    os.makedirs("./SAVED")
-if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
-    os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
+ROOT = Path.cwd().resolve()
+SAVED_DIR = (ROOT / "SAVED").resolve()
+DOWNLOAD_DIR = Path(Config.TMP_DOWNLOAD_DIRECTORY).resolve()
+SAVED_DIR.mkdir(parents=True, exist_ok=True)
+DOWNLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 
-@bot.on(Eiva_cmd(pattern="ls ?(.*)", outgoing=True))
-@bot.on(sudo_cmd(pattern="ls ?(.*)", allow_sudo=True))
-async def lst(event):
-    if event.fwd_from:
-        return
-    input_str = event.pattern_match.group(1)
-    if input_str:
-        msg = "📂 **Files in {} :**\n".format(input_str)
-        files = os.listdir(input_str)
-    else:
-        msg = "📂 **Files in Current Directory :**\n"
-        files = os.listdir(os.getcwd())
-    for file in files:
-        msg += "📑 `{}`\n".format(file)
-    if len(msg) <= Config.MAX_MESSAGE_SIZE_LIMIT:
-        await eor(event, msg)
-    else:
-        msg = msg.replace("`", "")
-        out = "filesList.txt"
-        with open(out, "w") as f:
-            f.write(f)
-        await bot.send_file(
-            event.chat_id,
-            out,
-            force_document=True,
-            allow_cache=False,
-            caption="`Output is huge. Sending as a file...`",
-        )
-        await event.delete()
-        
+def _within(path, base):
+    resolved = (base / path).resolve() if not Path(path).is_absolute() else Path(path).resolve()
+    if resolved != base and base not in resolved.parents:
+        raise ValueError("Path must stay inside the allowed directory")
+    return resolved
 
-@bot.on(Eiva_cmd(pattern="ls_local$", outgoing=True))
-@bot.on(sudo_cmd(pattern="ls_local$", allow_sudo=True))
-async def _(event):
-    if event.fwd_from:
-        return
-    PROCESS_RUN_TIME = 100
-    #    dirname = event.pattern_match.group(1)
-    #    tempdir = "localdir"
-    cmd = "ls -lh ./DOWNLOADS/"
-    #    if dirname == tempdir:
 
-    event.message.id
-    if event.reply_to_msg_id:
-        reply_to_id = event.reply_to_msg_id
-    time.time() + PROCESS_RUN_TIME
-    process = await asyncio.create_subprocess_sEiva(
-        cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+async def _send_listing(event, title, entries):
+    text = title + "\n" + "\n".join(f"• `{entry}`" for entry in entries)
+    if len(text) <= Config.MAX_MESSAGE_SIZE_LIMIT:
+        return await edit_or_reply(event, text or f"{title}\n(empty)")
+    payload = io.BytesIO(text.encode("utf-8"))
+    payload.name = "files.txt"
+    return await event.client.send_file(
+        event.chat_id, payload, force_document=True, caption=title
     )
-    OUTPUT = f"**Files in [ΣIVΛBθƬ]({chnl_link}) DOWNLOADS Folder:**\n"
-    stdout, stderr = await process.communicate()
-    if len(stdout) > Config.MAX_MESSAGE_SIZE_LIMIT:
-        with io.BytesIO(str.encode(stdout)) as out_file:
-            out_file.name = "exec.text"
-            await bot.send_file(
-                event.chat_id,
-                out_file,
-                force_document=True,
-                allow_cache=False,
-                caption=OUTPUT,
-                reply_to=reply_to_id,
-            )
-            await event.delete()
-    if stderr.decode():
-        await eor(event, f"**{stderr.decode()}**")
-        return
-    await eor(event, f"{OUTPUT}`{stdout.decode()}`")
 
 
-@bot.on(Eiva_cmd(pattern="ls_root$", outgoing=True))
-@bot.on(sudo_cmd(pattern="ls_root$", allow_sudo=True))
-async def _(event):
-    if event.fwd_from:
-        return
-    PROCESS_RUN_TIME = 100
-    cmd = "ls -lh"
-
-    reply_to_id = event.message.id
-    if event.reply_to_msg_id:
-        reply_to_id = event.reply_to_msg_id
-    time.time() + PROCESS_RUN_TIME
-    process = await asyncio.create_subprocess_sEiva(
-        cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-    )
-    OUTPUT = f"**Files in root directory:**\n"
-    stdout, stderr = await process.communicate()
-    if len(stdout) > Config.MAX_MESSAGE_SIZE_LIMIT:
-        with io.BytesIO(str.encode(stdout)) as out_file:
-            out_file.name = "exec.text"
-            await bot.send_file(
-                event.chat_id,
-                out_file,
-                force_document=True,
-                allow_cache=False,
-                caption=OUTPUT,
-                reply_to=reply_to_id,
-            )
-            await event.delete()
-    if stderr.decode():
-        await eor(event, f"**{stderr.decode()}**")
-        return
-    await eor(event, f"{OUTPUT}`{stdout.decode()}`")
+@bot.on(Eiva_cmd(pattern=r"ls(?:\s+(.+))?$", outgoing=True))
+@bot.on(sudo_cmd(pattern=r"ls(?:\s+(.+))?$", allow_sudo=True))
+async def list_path(event):
+    target = event.pattern_match.group(1)
+    try:
+        directory = _within(target.strip(), ROOT) if target else ROOT
+        if not directory.is_dir():
+            raise ValueError("Path is not a directory")
+        await _send_listing(event, f"Files in `{directory.relative_to(ROOT) or '.'}`:", sorted(p.name for p in directory.iterdir()))
+    except (OSError, ValueError) as exc:
+        await edit_or_reply(event, f"Cannot list path: `{exc}`")
 
 
-@bot.on(Eiva_cmd(pattern="ls_saved$", outgoing=True))
-@bot.on(sudo_cmd(pattern="ls_saved$", allow_sudo=True))
-async def _(event):
-    if event.fwd_from:
-        return
-    PROCESS_RUN_TIME = 100
-    cmd = "ls ./SAVED/"
-
-    reply_to_id = event.message.id
-    if event.reply_to_msg_id:
-        reply_to_id = event.reply_to_msg_id
-    time.time() + PROCESS_RUN_TIME
-    process = await asyncio.create_subprocess_sEiva(
-        cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-    )
-    OUTPUT = f"**Files in SAVED directory:**\n"
-    stdout, stderr = await process.communicate()
-    if len(stdout) > Config.MAX_MESSAGE_SIZE_LIMIT:
-        with io.BytesIO(str.encode(stdout)) as out_file:
-            out_file.name = "exec.text"
-            await bot.send_file(
-                event.chat_id,
-                out_file,
-                force_document=True,
-                allow_cache=False,
-                caption=OUTPUT,
-                reply_to=reply_to_id,
-            )
-            await event.delete()
-    if stderr.decode():
-        await eor(event, f"**{stderr.decode()}**")
-        return
-    await eor(event, f"{OUTPUT}`{stdout.decode()}`")
+async def _list_fixed(event, directory, label):
+    try:
+        entries = sorted(path.name for path in directory.iterdir())
+        await _send_listing(event, label, entries)
+    except OSError as exc:
+        await edit_or_reply(event, f"Cannot list files: `{exc}`")
 
 
-@bot.on(Eiva_cmd(pattern="rnsaved ?(.*)", outgoing=True))
-@bot.on(sudo_cmd(pattern="rnsaved ?(.*)", allow_sudo=True))
-async def _(event):
-    if event.fwd_from:
-        return
-    PROCESS_RUN_TIME = 100
-    input_str = event.pattern_match.group(1)
-    if "|" in input_str:
-        src, dst = input_str.split("|")
-        src = src.strip()
-        dst = dst.strip()
-    cmd = f"mv ./SAVED/{src} ./SAVED/{dst}"
-    reply_to_id = event.message.id
-    if event.reply_to_msg_id:
-        reply_to_id = event.reply_to_msg_id
-    time.time() + PROCESS_RUN_TIME
-    process = await asyncio.create_subprocess_sEiva(
-        cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-    )
-    stdout, stderr = await process.communicate()
-    if len(stdout) > Config.MAX_MESSAGE_SIZE_LIMIT:
-        OUTPUT = f"**Files in root directory:**\n"
-        with io.BytesIO(str.encode(stdout)) as out_file:
-            out_file.name = "exec.text"
-            await bot.send_file(
-                event.chat_id,
-                out_file,
-                force_document=True,
-                allow_cache=False,
-                caption=OUTPUT,
-                reply_to=reply_to_id,
-            )
-            await event.delete()
-    if stderr.decode():
-        await eor(event, f"**{stderr.decode()}**")
-        return
-    await eor(event, f"File renamed `{src}` to `{dst}`")
+@bot.on(Eiva_cmd(pattern=r"ls_local$", outgoing=True))
+@bot.on(sudo_cmd(pattern=r"ls_local$", allow_sudo=True))
+async def list_downloads(event):
+    await _list_fixed(event, DOWNLOAD_DIR, "Downloaded media:")
 
 
-@bot.on(Eiva_cmd(pattern="rnlocal ?(.*)", outgoing=True))
-@bot.on(sudo_cmd(pattern="rnlocal ?(.*)", allow_sudo=True))
-async def _(event):
-    if event.fwd_from:
-        return
-    PROCESS_RUN_TIME = 100
-    input_str = event.pattern_match.group(1)
-    if "|" in input_str:
-        src, dst = input_str.split("|")
-        src = src.strip()
-        dst = dst.strip()
-    cmd = f"mv ./DOWNLOADS/{src} ./DOWNLOADS/{dst}"
-    reply_to_id = event.message.id
-    if event.reply_to_msg_id:
-        reply_to_id = event.reply_to_msg_id
-    time.time() + PROCESS_RUN_TIME
-    process = await asyncio.create_subprocess_sEiva(
-        cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-    )
-    stdout, stderr = await process.communicate()
-    if len(stdout) > Config.MAX_MESSAGE_SIZE_LIMIT:
-        OUTPUT = f"**Files in root directory:**\n"
-        with io.BytesIO(str.encode(stdout)) as out_file:
-            out_file.name = "exec.text"
-            await bot.send_file(
-                event.chat_id,
-                out_file,
-                force_document=True,
-                allow_cache=False,
-                caption=OUTPUT,
-                reply_to=reply_to_id,
-            )
-            await event.delete()
-    if stderr.decode():
-        await eor(event, f"**{stderr.decode()}**")
-        return
-    await eor(event, f"File renamed `{src}` to `{dst}`")
+@bot.on(Eiva_cmd(pattern=r"ls_root$", outgoing=True))
+@bot.on(sudo_cmd(pattern=r"ls_root$", allow_sudo=True))
+async def list_root(event):
+    await _list_fixed(event, ROOT, "Repository files:")
 
 
-@bot.on(Eiva_cmd(pattern="delsave (.*)", outgoing=True))
-@bot.on(sudo_cmd(pattern="delsave (.*)", allow_sudo=True))
-async def handler(event):
-    if event.fwd_from:
-        return
-    input_str = event.pattern_match.group(1)
-    pathtofile = f"./SAVED/{input_str}"
-
-    if os.path.isfile(pathtofile):
-        os.remove(pathtofile)
-        await eod(event, "✅ File Deleted 🗑")
-
-    else:
-        await eod(event, "⛔️File Not Found😬")
+@bot.on(Eiva_cmd(pattern=r"ls_saved$", outgoing=True))
+@bot.on(sudo_cmd(pattern=r"ls_saved$", allow_sudo=True))
+async def list_saved(event):
+    await _list_fixed(event, SAVED_DIR, "Saved files:")
 
 
-@bot.on(Eiva_cmd(pattern="delocal (.*)", outgoing=True))
-@bot.on(sudo_cmd(pattern="delocal (.*)", allow_sudo=True))
-async def handler(event):
-    if event.fwd_from:
-        return
-    input_str = event.pattern_match.group(1)
-    pathtofile = f"./BotHub/{input_str}"
+async def _rename(event, raw, base):
+    try:
+        source, destination = (part.strip() for part in raw.split("|", 1))
+        if not source or not destination:
+            raise ValueError("Provide both names separated by `|`.")
+        src = _within(source, base)
+        dst = _within(destination, base)
+        if not src.is_file():
+            raise ValueError("Source file does not exist")
+        if dst.exists():
+            raise ValueError("Destination already exists")
+        src.rename(dst)
+        await edit_or_reply(event, f"Renamed `{src.name}` to `{dst.name}`")
+    except (OSError, ValueError) as exc:
+        await edit_or_reply(event, f"Rename failed: `{exc}`")
 
-    if os.path.isfile(pathtofile):
-        os.remove(pathtofile)
-        await eod(event, "✅ File Deleted 🗑")
 
-    else:
-        await eod(event, "⛔️File Not Found😬")
+@bot.on(Eiva_cmd(pattern=r"rnsaved\s+(.+)$", outgoing=True))
+@bot.on(sudo_cmd(pattern=r"rnsaved\s+(.+)$", allow_sudo=True))
+async def rename_saved(event):
+    await _rename(event, event.pattern_match.group(1), SAVED_DIR)
+
+
+@bot.on(Eiva_cmd(pattern=r"rnlocal\s+(.+)$", outgoing=True))
+@bot.on(sudo_cmd(pattern=r"rnlocal\s+(.+)$", allow_sudo=True))
+async def rename_download(event):
+    await _rename(event, event.pattern_match.group(1), DOWNLOAD_DIR)
+
+
+async def _delete_file(event, raw, base):
+    try:
+        path = _within(raw.strip(), base)
+        if not path.is_file():
+            raise ValueError("File does not exist")
+        path.unlink()
+        await edit_or_reply(event, f"Deleted `{path.name}`")
+    except (OSError, ValueError) as exc:
+        await edit_or_reply(event, f"Delete failed: `{exc}`")
+
+
+@bot.on(Eiva_cmd(pattern=r"delsave\s+(.+)$", outgoing=True))
+@bot.on(sudo_cmd(pattern=r"delsave\s+(.+)$", allow_sudo=True))
+async def delete_saved(event):
+    await _delete_file(event, event.pattern_match.group(1), SAVED_DIR)
+
+
+@bot.on(Eiva_cmd(pattern=r"delocal\s+(.+)$", outgoing=True))
+@bot.on(sudo_cmd(pattern=r"delocal\s+(.+)$", allow_sudo=True))
+async def delete_download(event):
+    await _delete_file(event, event.pattern_match.group(1), DOWNLOAD_DIR)
 
 
 CmdHelp("managers").add_command(
-  "ls_local", None, "Gives the list of downloaded medias in your Eivabot server."
+    "ls", "[path]", "Lists repository files or files in a repository subdirectory."
 ).add_command(
-  "ls_root", None, "Gives the list of all files in root directory of Eivabot repo."
+    "ls_local", None, "Lists downloaded media."
 ).add_command(
-  "ls_saved", None, "Gives the list of all files in Saved directory of your Eivabot server"
+    "ls_root", None, "Lists repository files."
 ).add_command(
-  "rnsaved", "from | to", "Renames the file in saved directory"
+    "ls_saved", None, "Lists saved files."
 ).add_command(
-  "rnlocal", "from | to", "Renames the file in downloaded directory"
+    "rnsaved", "from | to", "Renames a file in SAVED."
 ).add_command(
-  "delsave", "saved path", "Deletes the file from given saved path"
+    "rnlocal", "from | to", "Renames a downloaded file."
 ).add_command(
-  "delocal", "downloaded path", "Deletes the file from given downloaded path"
+    "delsave", "path", "Deletes a file from SAVED."
 ).add_command(
-  "ls", "<path name>", "Gives the list of all files in the given path"
-).add_info(
-  "EivaBot Managers."
-).add_warning(
-  "✅ Harmless Module."
-).add()
+    "delocal", "path", "Deletes a file from the downloads folder."
+).add_info("Bot file manager").add()

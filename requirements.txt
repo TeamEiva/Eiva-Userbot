@@ -13,7 +13,6 @@ csvfaker
 DateTime
 emoji
 fontTools
-fonttools
 geopy
 gitpython
 glitch_this
@@ -34,7 +33,7 @@ lottie
 lxml
 lyricsgenius
 nekos.py
-opencv-python--headless
+opencv-python-headless
 patool
 Pillow
 prettytable
@@ -77,4 +76,3 @@ youtube_dl
 youtube-search
 pymongo
 dnspython
-pymongo[srv]

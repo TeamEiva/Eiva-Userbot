@@ -1,129 +1,87 @@
+"""Application entry point."""
 import glob
-import os
-import sys
 from pathlib import Path
 
 import telethon.utils
 from telethon import TelegramClient
-from telethon.tl.functions.channels import InviteToChannelRequest, JoinChannelRequest
+from telethon.tl.functions.channels import JoinChannelRequest
 
 from Eivabot import LOGS, bot, tbot
 from Eivabot.config import Config
 from Eivabot.utils import load_module, start_assistant
-from Eivabot.version import __Eiva__ as Eivaver
-hl = Config.HANDLER
-Eiva_PIC = Config.ALIVE_PIC or "https://telegra.ph/file/5501c52fed1b2229ad03d.jpg"
+from Eivabot.version import __Eiva__
 
-# let's get the bot ready
-async def Eiva_bot(bot_token):
+
+def validate_config():
+    required = ("APP_ID", "API_HASH", "EivaBOT_SESSION", "BOT_TOKEN")
+    missing = [key for key in required if not getattr(Config, key, None)]
+    if missing:
+        raise SystemExit("Missing required configuration: " + ", ".join(missing))
     try:
-        await bot.start(bot_token)
-        bot.me = await bot.get_me()
-        bot.uid = telethon.utils.get_peer_id(bot.me)
-    except Exception as e:
-        LOGS.error(f"EivaBOT_SESSION - {str(e)}")
-        sys.exit()
+        int(Config.APP_ID)
+    except (TypeError, ValueError) as exc:
+        raise SystemExit("APP_ID must be an integer") from exc
 
 
-# Eivabot starter...
-if len(sys.argv) not in (1, 3, 4):
-    bot.disconnect()
-else:
-    bot.tgbot = None
-    try:
-        if Config.BOT_USERNAME is not None:
-            LOGS.info("Checking Telegram Bot Username...")
-            bot.tgbot = TelegramClient(
-                "BOT_TOKEN", api_id=Config.APP_ID, api_hash=Config.API_HASH
-            ).start(bot_token=Config.BOT_TOKEN)
-            LOGS.info("Checking Completed. Proceeding to next step...")
-            LOGS.info("🔰 Starting EivaBot 🔰")
-            bot.loop.run_until_complete(Eiva_bot(Config.BOT_USERNAME))
-            LOGS.info("🔥 EivaBot Startup Completed 🔥")
-        else:
-            bot.start()
-    except Exception as e:
-        LOGS.error(f"BOT_TOKEN - {str(e)}")
-        sys.exit()
-
-# imports plugins...
-path = "Eivabot/plugins/*.py"
-files = glob.glob(path)
-for name in files:
-    with open(name) as f:
-        path1 = Path(f.name)
-        shortname = path1.stem
-        load_module(shortname.replace(".py", ""))
-
-async def asst():
-  """
-  Loading Assistant From here
-  """
-  path = 'Eivabot/assistant/*.py'
-  files = glob.glob(path)
-  for name in files:
-    with open(name) as f:
-      path1 = Path(f.name)
-      shortname = path1.stem
-      start_assistant(shortname.replace(".py", ""))
-
-# Extra Modules...
-# extra_repo = Config.EXTRA_REPO or "https://github.com/TeamEiva/Extra"
-# if Config.EXTRA == "True":
-#    try:
-#       os.system(f"git clone {extra_repo}")
-#    except BaseException:
-#        pass
-#   LOGS.info("Installing Extra Plugins")
-#    path = "hellbot/plugins/*.py"
-#   files = glob.glob(path)
-#    for name in files:
-#        with open(name) as ex:
-#            path2 = Path(ex.name)
-#            shortname = path2.stem
-#            load_module(shortname.replace(".py", ""))
+def load_plugins():
+    for filename in sorted(glob.glob("Eivabot/plugins/*.py")):
+        module_name = Path(filename).stem
+        try:
+            load_module(module_name)
+        except Exception:
+            LOGS.exception("Plugin %s failed to load", module_name)
 
 
-# let the party begin...
-LOGS.info("Starting Bot Mode !")
-tbot.start()
-LOGS.info("⚡ Your EivaBot Is Now Working ⚡")
-LOGS.info(
-    "Head to @TheEiva for Updates. Also join chat group to get help regarding to EivaBot."
-)
+def load_assistants():
+    for filename in sorted(glob.glob("Eivabot/assistant/*.py")):
+        module_name = Path(filename).stem
+        try:
+            start_assistant(module_name)
+        except Exception:
+            LOGS.exception("Assistant module %s failed to load", module_name)
 
-# that's life...
-async def Eiva_is_on():
-    try:
-        if Config.LOGGER_ID != 0:
+
+async def announce_startup():
+    if Config.LOGGER_ID:
+        picture = Config.ALIVE_PIC or "https://telegra.ph/file/5501c52fed1b2229ad03d.jpg"
+        try:
             await bot.send_file(
                 Config.LOGGER_ID,
-                Eiva_PIC,
-                caption=f"#START \n\nDeployed ΣIVΛBθƬ Successfully\n\n**ΣIVΛBθƬ - {Eivaver}**\n\nType `{hl}ping` or `{hl}alive` to check! \n\nJoin [ΣIVΛBθƬ Channel](t.me/TheEiva) for Updates & [ΣIVΛBθƬ Chat](t.me/EivaSupport) for any query regarding ΣIVΛBθƬ",
+                picture,
+                caption=f"#START\n\nEivaBot {__Eiva__} is online. Type `{Config.HANDLER}ping` or `{Config.HANDLER}alive` to check.",
             )
-    except Exception as e:
-        LOGS.info(str(e))
-
-# Join EivaBot Channel after deploying 🤐😅
+        except Exception:
+            LOGS.exception("Could not send startup notification")
     try:
         await bot(JoinChannelRequest("@TheEiva"))
-    except BaseException:
-        pass
+    except Exception:
+        LOGS.debug("Could not join the update channel", exc_info=True)
 
-# Why not come here and chat??
-#    try:
-#        await bot(JoinChannelRequest("@EivaSupport"))
-#    except BaseException:
- #       pass
 
-bot.loop.create_task(asst())
-
-bot.loop.create_task(Eiva_is_on())
-
-if len(sys.argv) not in (1, 3, 4):
-    bot.disconnect()
-else:
+def main():
+    validate_config()
     bot.tgbot = None
-    bot.run_until_disconnected()
+    try:
+        bot.start()
+        bot.me = bot.loop.run_until_complete(bot.get_me())
+        bot.uid = telethon.utils.get_peer_id(bot.me)
+        tbot.start(bot_token=Config.BOT_TOKEN)
+        bot.tgbot = tbot
+    except Exception:
+        LOGS.exception("Telegram startup failed")
+        raise SystemExit(1)
 
-# Eivabot
+    load_plugins()
+    load_assistants()
+    bot.loop.create_task(announce_startup())
+    LOGS.info("EivaBot is running")
+    try:
+        bot.run_until_disconnected()
+    finally:
+        bot.loop.run_until_complete(bot.disconnect())
+        if bot.tgbot:
+            bot.loop.run_until_complete(bot.tgbot.disconnect())
+
+
+if __name__ == "__main__":
+    main()
